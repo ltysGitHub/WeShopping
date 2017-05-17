@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ltysGitHub/WeShopping/issues"
   },
-  "homepage": "https://github.com/ltysGitHub/WeShopping#readme"
+  "homepage": "https://github.com/ltysGitHub/WeShopping#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
 }
