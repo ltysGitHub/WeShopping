@@ -1,11 +1,11 @@
 html{
-    height:768px;
+    /*height:768px;*/
     width:1366px;
     margin:auto;
 }
 
 body{
-    height:768px;
+    /*height:768px;*/
     width:1366px;
     padding:0;
     color: #555555;
@@ -24,17 +24,19 @@ h2{
 }
 
 .main{
-    height:768px;
     width:1366px;
     padding:0;
     color: #555555;
 }
+
 .nav{
+    top:0;
     height: 46px;
-    width:100%;
+    width:1366px;
     padding:3px;
     background:#f6f6f6;
     box-shadow: 0 0 18px #e6e6e6;
+    position:fixed;
     /*border-radius: 6px;*/
 }
 
@@ -52,12 +54,6 @@ h2{
     cursor:pointer;
 }
 
-.search-input{
-    display: inline-block;
-    width: 350px;
-    line-height: 40px;
-}
-
 .search{
     height: 40px;
     display: inline-block;
@@ -68,7 +64,7 @@ h2{
 .search-input{
     vertical-align: top;
     display: inline-block;
-    width: 350px;
+    width: 450px;
 }
 
 .search-btn{
@@ -113,13 +109,119 @@ h2{
 .nav-head:hover{
     cursor: pointer;
 }
+.good-list{
+    width: 1366px;
+    margin-top: 40px;
+}
+
+.good{
+    display: inline-block;
+    width:328px;
+    margin-right:5px;
+    margin-left:5px;
+    margin-top:5px;
+    background-color: #dddddd;
+    height: 410px;
+    vertical-align: top;
+    box-shadow: 0 0 18px #e6e6e6;
+}
+
+.div-good-name{
+    font-size: x-large;
+    display: inline-block;
+    width: 300px;
+    height: 30px;
+    margin-left: 10px;
+    overflow: hidden;
+    vertical-align: center;
+    line-height: 30px;
+}
+
+.good-name-lab{
+    display: inline-block;
+    width: 300px;
+    margin: 0;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+}
+
+.good-name-lab:hover{
+    cursor: pointer;
+}
+
+.div-good-shop{
+    font-size: x-large;
+    display: inline-block;
+    width: 300px;
+    height: 30px;
+    margin-left: 10px;
+    overflow: hidden;
+    vertical-align: center;
+    line-height: 30px;
+}
+
+.good-shop-lab{
+    display: inline-block;
+    width: 300px;
+    margin: 0;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+}
+
+.good-shop-lab:hover{
+    cursor: pointer;
+}
+
+.good-photo{
+    display: inline-block;
+    margin: 10px;
+    width:300px;
+    height:240px;
+}
+
+.div-good-price{
+    font-size: x-large;
+    display: inline-block;
+    width: 300px;
+    height: 30px;
+    margin-left: 10px;
+    overflow: hidden;
+    vertical-align: center;
+    line-height: 30px;
+}
+
+.good-price-lab{
+    float: right;
+    display: inline-block;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+}
+
+.div-good-option{
+    font-size: x-large;
+    display: inline-block;
+    width: 300px;
+    height: 40px;
+    margin-left: 10px;
+    overflow: hidden;
+    vertical-align: center;
+    line-height: 30px;
+}
+.good-shop-cart-btn,.good-buy-btn{
+    width: 120px;
+    margin-left: 20px;
+}
 
 .cover-layer{
     position: absolute;
     z-index: 9;
     top:0;
-    height: 768px;
+    height: 100%;
     width: 1366px;
+    /*width: 1366px;*/
     display: none;
     background-color:#000000;
     opacity:0.5;
@@ -127,6 +229,7 @@ h2{
     padding:10px;
     filter:alpha(opacity=50);
 }
+
 
 .login{
     width:400px;
@@ -287,7 +390,7 @@ h2{
 
 /*
 .signup-sex-women{
-    
+
 }*/
 
 .good-list{

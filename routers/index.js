@@ -11,7 +11,6 @@ router.use(function timeLog(req, res, next) {
     next();
 });
 
-// 定义网站主页的路由
 router.get('/', function(req, res){
     res.render('index');
 });

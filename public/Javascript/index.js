@@ -1,9 +1,17 @@
 /**
  * Created by 刘腾营 on 2017/5/23.
  */
+// const signup = require('./client-signup');
+
 $(document).ready(function(){
     $("#nav-head").click(function(){
         $("#div-login").fadeIn(500);
+        let height = parseFloat($("body").css("height").slice(0,-2)) + 46;
+        if(height > 768){
+            $("#div-cover-layer").css("height",height+"px");
+        }else{
+            $("#div-cover-layer").css("height",768+"px");
+        }
         $("#div-cover-layer").fadeIn(500);
         $("#main").addClass("disabled");
     });
@@ -17,7 +25,7 @@ $(document).ready(function(){
         $("#div-login").fadeOut(500);
         $("#div-signup").fadeOut(500);
         $("#div-cover-layer").fadeOut(500);
-    })
+    });
 
     $("#login-signup").click(function(){
         $("#div-login").fadeOut(500);
@@ -42,11 +50,25 @@ $(document).ready(function(){
         if(email == "" || reg.test(email)){
             $("#signup-email").removeClass("has-error");
             $("#signup-email-prompt-lab").html("");
+            if(email != ""){
+                checkEmail(email)
+                    .then((back)=>{
+                        if(back.status === 0){
+                            if(back.result === true){
+                                $("#signup-email").addClass("has-error");
+                                $("#signup-email-prompt-lab").html("邮箱已存在");
+                            }else{
+                                $("#signup-email-prompt-lab").html("邮箱可用");
+                            }
+                        }
+                    });
+            }
         }else{
             $("#signup-email").addClass("has-error");
             $("#signup-email-prompt-lab").html("邮箱格式错误");
         }
     });
+
     $("#signup-email-input").focus(function(){
         $("#signup-email").removeClass("has-error");
         $("#signup-email-prompt-lab").html("");
@@ -63,6 +85,7 @@ $(document).ready(function(){
     //         $("#signup-name-prompt-lab").html("姓名不能为空");
     //     }
     // });
+
     $("#signup-name-input").focus(function(){
         $("#signup-name").removeClass("has-error");
         $("#signup-name-prompt-lab").html("");
@@ -91,4 +114,6 @@ $(document).ready(function(){
         $("#signup-sex-women").addClass("disabled");
         $("#signup-sex-man").removeClass("disabled");
     });
+
+
 });
