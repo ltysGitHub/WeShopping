@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>WeShopping-Signin</title>
+    <title>WeShopping</title>
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/tether-1.3.3/dist/css/tether.min.css">
     <link rel="stylesheet" href="/static/CSS/noResponse.css">
@@ -104,15 +104,25 @@
         </div>
         <div class="signup-passwd" id="signup-passwd">
             <lable for="signup-passwd-input" class="signup-passwd-lab control-label">密&nbsp;&nbsp;  码</lable>
-            <input type="passwd" class="form-control signup-passwd-input" id="signup-passwd-input" placeholder="密码">
-            <lable for="signup-passwd-input" class="signup-passwd-prompt-lab control-label" id="psignup-asswd-prompt-lab"></lable>
+            <input type="password" class="form-control signup-passwd-input" id="signup-passwd-input" placeholder="密码">
+            <lable for="signup-passwd-input" class="signup-passwd-prompt-lab control-label" id="signup-passwd-prompt-lab"></lable>
         </div>
         <div class="signup-sex" id="signup-sex">
             <button class="signup-sex-man btn btn-default" id="signup-sex-man">男</button>
             <button class="signup-sex-women btn btn-default" id="signup-sex-women">女</button>
         </div>
         <div class="signup-submit" id="signup-submit">
-            <button class="signup-sign-up btn btn-success">注册</button>
+            <button class="signup-sign-up btn btn-success" id="signup-sign-up">注册</button>
+        </div>
+    </div>
+    <div class="alert" id="alert">
+        <div class="alert-title">
+            <h2>WeShopping</h2>
+        </div>
+        <div class="alert-content" id="alert-content">
+            <label  class="alert-content-lab" id="alert-content-lab">
+                abcdefg中文
+            </label>
         </div>
     </div>
 </body>

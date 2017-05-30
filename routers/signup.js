@@ -12,8 +12,9 @@ router.use(function timeLog(req, res, next){
 });
 
 router.post('/',(req,res)=>{
-    console.log(req.query);
-    let info = {name:req.query.name,phone:req.query.phone,email:req.query.email,passwd:req.query.passwd,sex:req.query.sex};
+    // console.log(req.query);
+    console.log(req.body);
+    let info = {name:req.body.name,phone:req.body.phone,email:req.body.email,passwd:req.body.passwd,sex:req.body.sex};
     new mysql("root","liutengying").addUser(info)
         .then((back)=>{
             res.send(back);
@@ -26,8 +27,8 @@ router.post('/',(req,res)=>{
 });
 
 router.post('/check/email',(req,res)=>{
-    console.log(req.body);
-    let email = req.query.email;
+    // console.log(req.body);
+    let email = req.body.email;
     new mysql("root","liutengying").checkEmail(email)
         .then((back)=>{
             res.send(back);
@@ -40,8 +41,8 @@ router.post('/check/email',(req,res)=>{
 });
 
 router.post('/check/phone',(req,res)=>{
-    console.log(req.body);
-    let phone = req.query.phone;
+    // console.log(req.body);
+    let phone = req.body.phone;
     new mysql("root","liutengying").checkPhone(phone)
         .then((back)=>{
             res.send(back);
