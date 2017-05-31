@@ -23,6 +23,10 @@ h2{
     margin-top:0px;
 }
 
+img{
+    border-style:none;
+}
+
 .main{
     width:1366px;
     padding:0;
@@ -109,6 +113,15 @@ h2{
 .nav-head:hover{
     cursor: pointer;
 }
+
+.user-head{
+    line-height: 40px;
+    border-style: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
 .good-list{
     width: 1366px;
     margin-top: 40px;
@@ -297,11 +310,11 @@ h2{
     width:100%;
 }
 
-.login-signup,.login-login{
+.login-signup-btn,.login-login-btn{
     width:150px;
 }
 
-.login-login{
+.login-login-btn{
     margin-left: 50px;
 }
 
@@ -366,7 +379,7 @@ h2{
     width:100%;
 }
 
-.signup-sign-up{
+.signup-signup-btn{
     width:100%;
     margin-left: auto;
     margin-right:auto;

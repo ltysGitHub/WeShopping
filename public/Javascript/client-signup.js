@@ -38,20 +38,13 @@ function signup(info){
             data:info,
             success:(back)=>{
                 console.log(back);
-                resolve(back);
+                if(back.status == 0){
+                    resolve(back);
+                }else{
+                    reject(back);
+                }
             }
         });
     });
 }
 
-function alert(info,msec,closeCover){
-    $("#alert-content-lab").html(info);
-    $("#alert").fadeIn(500);
-    $("#div-cover-layer").fadeIn(500);
-    setTimeout(()=>{
-        $("#alert").fadeOut(500);
-        if(closeCover){
-            $("#div-cover-layer").fadeOut(500);
-        }
-    },msec);
-}

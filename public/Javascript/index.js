@@ -151,7 +151,7 @@ $(document).ready(function(){
         $("#alert").fadeOut(500);
     });
 
-    $("#signup-sign-up").click(()=>{
+    $("#signup-signup-btn").click(()=>{
         let err = 0;
         let email = $("#signup-email-input").val();
         let phone = $("#signup-phone-input").val();
@@ -196,14 +196,58 @@ $(document).ready(function(){
                     console.log(back);
                     $("#div-signup").fadeOut(500);
                     alert("注册成功",3000,true);
+                    $("#nav-head").css("id","nav-head-signed");
                 })
                 .catch((back)=>{
                     console.log(back);
-                    $("#div-signup").fadeOut(500);
+                    // $("#div-signup").fadeOut(500);
                     alert("注册失败",3000,true);
                 });
         }
 
     });
 
+    $("#login-login-btn").click(()=>{
+        let err = 0;
+        let user = $("#login-user-input").val();
+        let passwd = $("#login-passwd-input").val();
+        if(user == ""){
+            err = 1;
+            $("#login-user").addClass("has-error");
+            $("#login-user-prompt-lab").html("账号不能为空");
+        }
+        if(passwd == ""){
+            err = 1;
+            $("#login-passwd").addClass("has-error");
+            $("#login-passwd-prompt-lab").html("密码不能为空");
+        }
+        if(err === 0){
+            login({user:user,passwd:passwd}).then((back)=>{
+                if(back.status === 0){
+                    if(back.result == true){
+                        alert("登录成功",3000,true);
+                        $("#div-login").fadeOut(500);
+                    }else{
+                        alert("账号或密码错误",3000,false);
+                    }
+                }else{
+                    alert("登录异常,请稍后再试",3000,false);
+                }
+            }).catch((back)=>{
+                alert("登录异常,请稍后再试",3000,false);
+            });
+        }
+    });
+
+    $("#login-user-input").focus(()=>{
+        $("#login-user").removeClass("has-error");
+        $("#login-user-prompt-lab").html("");
+    });
+
+    $("#login-passwd-input").focus(()=>{
+        $("#login-passwd").removeClass("has-error");
+        $("#login-passwd-prompt-lab").html("");
+    });
+
+    // loadUserHead("user-head");
 });

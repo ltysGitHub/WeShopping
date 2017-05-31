@@ -6,6 +6,7 @@ let path = require('path');
 let index = require('./routers/index');
 let login = require('./routers/login');
 let signup = require('./routers/signup');
+let user = require('./routers/user');
 let partials = require('express-partials');
 let bodyParser = require("body-parser");
 let session = require('express-session');
@@ -17,10 +18,20 @@ app.use('/static',express.static(path.join(__dirname,'public')));
 app.set('view engine', 'ejs');
 app.engine('ejs', require('ejs').__express);
 app.use(bodyParser.urlencoded({extended:false}));
+app.use(cookieParser());
+app.use(session({
+    secret:"lty'WeShopping",
+    name:'WeShopping',
+    resave:true,
+    rolling:true,
+    saveUninitialized:false,
+    cookie:{maxAge:1500000}
+}));
+
 app.use('/',index);
 app.use('/login',login);
 app.use('/signup',signup);
-
+app.use('/user',user);
 
 var server = app.listen(3000, function(){
     var host = server.address().address;

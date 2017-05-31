@@ -100,7 +100,7 @@ class Mysql{
                                                                 reject(back);
                                                             });
                                                         }else{
-                                                            let back = {status:0};
+                                                            let back = {status:0,result:id};
                                                             con.end();
                                                             resolve(back);
                                                         }
@@ -206,6 +206,49 @@ class Mysql{
         });
     }
 
+    /**
+     * 验证用户登录
+     * @param info 包含user、passwd键
+     * @returns {Promise}   如果登录成功，返回result:true，UserId失败则返回result:false，异常则返回status:***
+     */
+    checkUser(info){
+        return new Promise((resolve,reject)=>{
+            let con = mysql.createConnection({
+                host:this.host,
+                user:this.user,
+                password:this.passwd,
+                database:this.database
+            });
+            if(typeof info.user !== 'string' || typeof info.passwd !== 'string'){
+                let back = {status:1};
+            }else{
+                info.user = con.escape(info.user);
+                info.passwd = con.escape(info.passwd);
+                let sql = `select COUNT(*) count,users.id from users,pwd
+                            where (users.phone = ${info.user} or users.email = ${info.user}) and users.id = pwd.id and pwd.pw = ${info.passwd};`
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        // console.log(err.message);
+                        let back = {status:2};
+                        con.end();
+                        reject(back);
+                    }else{
+                        let back = {status:0};
+                        con.end();
+                        if(result[0].count === 0){
+                            back.result = false;
+                        }else{
+                            back.result = true;
+                            back.userId = result[0].id;
+                        }
+                        resolve(back);
+                    }
+                });
+            }
+        });
+    }
+
+    
 }
 
 // console.log(uuid.v1());
@@ -233,5 +276,14 @@ class Mysql{
 //     .catch((back)=>{
 //         console.log(back);
 //     });
+
+// new Mysql("root","liutengying").checkUser({user:"287233266@qq.com",passwd:"liutengying"})
+//     .then((back)=>{
+//         console.log(back);
+//     })
+//     .catch((back)=>{
+//         console.log(back);
+//     });
+
 
 module.exports = Mysql;

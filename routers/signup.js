@@ -17,6 +17,7 @@ router.post('/',(req,res)=>{
     let info = {name:req.body.name,phone:req.body.phone,email:req.body.email,passwd:req.body.passwd,sex:req.body.sex};
     new mysql("root","liutengying").addUser(info)
         .then((back)=>{
+            req.session.userId = back.result;
             res.send(back);
             console.log(back);
         })

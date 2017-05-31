@@ -12,15 +12,36 @@ router.use(function timeLog(req, res, next) {
 });
 
 router.get('/', function(req, res){
-    res.render('index');
+    // req.session.user = "中文测试";
+    if(typeof req.session.userId === 'string'){
+        res.render('index',{userHeader:"../static/image/user.png"});
+    }else{
+        res.render('index');
+    }
+
 });
 
 router.get('/index', function(req, res){
-    res.render('index');
+    if(typeof req.session.userId === 'string'){
+        console.log(req.session.userId);
+        res.render('index',{userHeader:"../static/image/user.png"});
+    }else{
+        console.log('no login');
+        res.render('index');
+    }
+    // console.log(req.session.user);
+    // req.session.user = "中文测试";
+    // res.render('index');
 });
 
 router.get('/index.html', function(req, res){
-    res.render('index');
+    if(typeof req.session.userId === 'string'){
+        console.log(req.session.userId);
+        res.render('index',{userHeader:"../static/image/user.png"});
+    }else{
+        console.log('no login');
+        res.render('index');
+    }
 });
 
 
