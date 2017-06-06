@@ -22,7 +22,7 @@ router.post('/',(req,res)=>{
             if(back.result === true){
                 req.session.userId = back.userId;
             }
-            console.log("abc"+back);
+            console.log(back);
             res.send(back);
         }).catch((back)=>{
             res.send(back);

@@ -6,9 +6,12 @@ html{
 
 body{
     /*height:768px;*/
-    width:1366px;
+    width:100%;
     padding:0;
+    margin:0;
     color: #555555;
+    position:relative;
+    /*overflow-x: hidden;*/
 }
 
 a{
@@ -41,6 +44,7 @@ img{
     background:#f6f6f6;
     box-shadow: 0 0 18px #e6e6e6;
     position:fixed;
+    z-index: 20;
     /*border-radius: 6px;*/
 }
 
@@ -124,7 +128,7 @@ img{
 
 .good-list{
     width: 1366px;
-    margin-top: 40px;
+    margin-top: 46px;
 }
 
 .good{
@@ -229,7 +233,7 @@ img{
 }
 
 .cover-layer{
-    position: absolute;
+    position: fixed;
     z-index: 9;
     top:0;
     height: 100%;
@@ -270,7 +274,7 @@ img{
 
 .login-cancel:hover{
     cursor: pointer;
-    font-size: 25px;
+    /*font-size: 25px;*/
 }
 
 .login-cancel{
@@ -385,19 +389,19 @@ img{
     margin-right:auto;
 }
 
-.signup-sex-man,.signup-sex-women{
+.signup-user-type-seller,.signup-user-type-origin{
     margin-left: 20px;
     width:155px;
     border-radius: 0;
 }
 
-.signup-sex-man.active,.signup-sex-women.active{
+.signup-user-type-seller.active,.signup-user-type-origin.active{
     background-color:#ffffff;
     border-color:#2aabd2;
     box-shadow: 0 0 3px #2aabd2;
 }
 
-.signup-sex{
+.signup-user-type{
     margin-bottom: 30px;
 }
 
@@ -439,6 +443,183 @@ img{
     /*width: */
 }
 
+.user-option{
+    width:100px;
+    /*height:160px;*/
+    position:fixed;
+    top:50px;
+    left:1266px;
+    float:right;
+    z-index:13;
+    border-radius: 5px;
+    background-color: #f6f6f6;
+    box-shadow:0 0 6px #e6e6e6;
+    display: none;
+}
+
+.user-option-item{
+    width: 100%;
+    height: 40px;
+    display: block;
+    line-height: 40px;
+    border-bottom: 1px solid #c6c6c6;
+    border-radius: 2px;
+    font-size: large;
+    text-align: center;
+}
+
+.user-option-item:hover{
+    cursor: pointer;
+    background-color: #c6c6c6;
+}
+
+.user-option-quit{
+    color: #ee4136;
+}
+
+.user-center{
+    width:400px;
+    height:400px;
+    padding:15px;
+    position:absolute;
+    top:150px;
+    left:483px;
+    z-index:11;
+    border-radius: 10px;
+    background-color: #f6f6f6;
+    box-shadow:0 0 18px #e6e6e6;
+    display: none;
+}
+
+.user-center-email,
+.user-center-phone,
+.user-center-name,
+.user-center-sex,
+.user-center-type,
+.user-center-submit
+{
+    display: inline-block;
+    line-height: 30px;
+    height: 40px;
+    vertical-align:center;
+    margin-top: 10px;
+    width: 370px;
+}
+
+.user-center-email-lab,
+.user-center-phone-lab,
+.user-center-name-lab,
+.user-center-sex-lab,
+.user-center-type-lab{
+    display: inline-block;
+    font-size: large;
+    line-height: 30px;
+    height: 30px;
+    width: 60px;
+    margin: 0;
+    vertical-align: center;
+    /*top:0;*/
+}
+
+.user-center-email-lab-con,
+.user-center-phone-lab-con,
+.user-center-name-lab-con{
+    display: inline-block;
+    width:300px;
+    height: 30px;
+    margin: 0;
+    font-size: large;
+    line-height: 30px;
+    vertical-align: center;
+}
+
+.user-center-sex-man-btn,
+.user-center-sex-woman-btn,
+.user-center-type-seller-btn,
+.user-center-type-origin-btn{
+    display: inline-block;
+    line-height: 30px;
+    width:150px;
+    height: 30px;
+    font-size: large;
+    padding: 0;
+}
+
+.user-center-submit-show-good-btn,
+.user-center-submit-edit-btn{
+    display: inline-block;
+    line-height: 30px;
+    width: 180px;
+    height: 30px;
+    font-size: large;
+    padding: 0;
+}
+
+.div-seller-good{
+    border-radius: 10px;
+    background-color: #f6f6f6;
+    box-shadow:0 0 18px #e6e6e6;
+    /*display: none;*/
+    z-index: 14;
+    /*display: inline-block;*/
+    width: 1000px;
+    height: 700px;
+    position:absolute;
+    top:0px;
+    /*margin:auto;*/
+    /*left: 183px;*/
+    right:183px;
+}
+
+.seller-good-cancel{
+    /*display: inline-block;*/
+    /*float: right;*/
+    line-height: 30px;
+    font-size: 20px;
+    position: absolute;
+    /*left:970px;*/
+    right:10px;
+    top:10px;
+    z-index: 15;
+}
+
+.seller-good-cancel:hover{
+    cursor: pointer;
+    /*font-size: 25px;*/
+}
+
+.div-seller-good-table{
+    position: relative;
+    /*left:25px;*/
+    width: 1000px;
+    text-align: center;
+    display: inline-block;
+}
+
+th{
+    text-align: center;
+}
+
+.seller-good-table-option{
+    text-align: center;
+}
+
+.seller-good-table-option:hover{
+    cursor: pointer;
+    background-color: #ffffff;
+}
+
+caption{
+    text-align: center;
+}
+
+caption h2{
+    margin: 0;
+}
+
+/*.user-option-quit:hover{*/
+    /*background-color: #bb4136;*/
+/*}*/
 
 /*.navbar{*/
 /*width:1366px;*/

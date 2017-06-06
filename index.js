@@ -5,6 +5,7 @@ let express = require('express');
 let path = require('path');
 let index = require('./routers/index');
 let login = require('./routers/login');
+let logout = require('./routers/logout');
 let signup = require('./routers/signup');
 let user = require('./routers/user');
 let partials = require('express-partials');
@@ -30,6 +31,7 @@ app.use(session({
 
 app.use('/',index);
 app.use('/login',login);
+app.use('/logout',logout);
 app.use('/signup',signup);
 app.use('/user',user);
 

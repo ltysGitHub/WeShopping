@@ -4,17 +4,8 @@
 // const signup = require('./client-signup');
 
 $(document).ready(function(){
-    $("#nav-head").click(function(){
-        $("#div-login").fadeIn(500);
-        let height = parseFloat($("body").css("height").slice(0,-2)) + 46;
-        if(height > 768){
-            $("#div-cover-layer").css("height",height+"px");
-        }else{
-            $("#div-cover-layer").css("height",768+"px");
-        }
-        $("#div-cover-layer").fadeIn(500);
-        $("#main").addClass("disabled");
-    });
+    $("#nav-head").click(unloggedHeadClick);
+    $("#nav-head-logged").hover(loggedHeadClick);
 
     $("#login-cancel").click(function(){
         $("#div-login").fadeOut(500);
@@ -25,10 +16,12 @@ $(document).ready(function(){
         $("#div-login").fadeOut(500);
         $("#div-signup").fadeOut(500);
         $("#alert").fadeOut(500);
+        $("#div-user-center").fadeOut(500);
         $("#div-cover-layer").fadeOut(500);
     });
 
-    $("#login-signup").click(function(){
+    $("#login-signup-btn").click(function(){
+        // console.log("aaasdwd");
         $("#div-login").fadeOut(500);
         $("#div-signup").fadeIn(500);
     });
@@ -38,11 +31,18 @@ $(document).ready(function(){
         $("#div-cover-layer").fadeOut(500);
     });
 
-    $("#signup-sex-man").click(function(){
-        $("#signup-sex-man").addClass("active");
-        $("#signup-sex-man").addClass("disabled");
-        $("#signup-sex-women").removeClass("active");
-        $("#signup-sex-women").removeClass("disabled");
+    $("#signup-user-type-seller").click(function(){
+        $("#signup-user-type-seller").addClass("active");
+        $("#signup-user-type-seller").addClass("disabled");
+        $("#signup-user-type-origin").removeClass("active");
+        $("#signup-user-type-origin").removeClass("disabled");
+    });
+
+    $("#signup-user-type-origin").click(function(){
+        $("#signup-user-type-origin").addClass("active");
+        $("#signup-user-type-origin").addClass("disabled");
+        $("#signup-user-type-seller").removeClass("active");
+        $("#signup-user-type-seller").removeClass("disabled");
     });
 
     $("#signup-email-input").blur(function(){
@@ -130,7 +130,6 @@ $(document).ready(function(){
             $("#signup-phone").addClass("has-error");
             $("#signup-email").removeClass("has-success");
             $("#signup-phone-prompt-lab").html("电话号码格式错误");
-
         }
     });
     $("#signup-phone-input").focus(function(){
@@ -140,12 +139,7 @@ $(document).ready(function(){
     });
 
 
-    $("#signup-sex-women").click(function(){
-        $("#signup-sex-man").removeClass("active");
-        $("#signup-sex-women").addClass("active");
-        $("#signup-sex-women").addClass("disabled");
-        $("#signup-sex-man").removeClass("disabled");
-    });
+
 
     $("#alert").click(()=>{
         $("#alert").fadeOut(500);
@@ -181,32 +175,69 @@ $(document).ready(function(){
             err = 1;
         }
         if(err === 1){
-            alert("还有错误信息",3000,false);
+            alert("还有错误信息",1000,false);
         }else{
-            let sex = 'u';
-            if($("#signup-sex-man").hasClass("active")){
-                sex = 'm';
+            let type = 'o';
+            if($("#signup-user-type-seller").hasClass("active")){
+                type = 's';
             }
             if($("#signup-sex-women").hasClass("active")){
-                sex = 'w';
+                type = 'o';
             }
-            let info = {email:email,phone:phone,passwd:passwd,name:name,sex:sex};
-            signup(info)
-                .then((back)=>{
-                    console.log(back);
-                    $("#div-signup").fadeOut(500);
-                    alert("注册成功",3000,true);
-                    $("#nav-head").css("id","nav-head-signed");
-                })
-                .catch((back)=>{
-                    console.log(back);
-                    // $("#div-signup").fadeOut(500);
-                    alert("注册失败",3000,true);
-                });
+            let info = {email:email,phone:phone,passwd:passwd,name:name,type:type,sex:'u'};
+            signup(info).then((back)=>{
+                // console.log(back);
+                $("#div-signup").fadeOut(500);
+                alert("注册成功",1000,true);
+                $("#nav-head").unbind("click");
+                $("#nav-head").attr("id","nav-head-logged");
+                $("#nav-head-logged").hover(loggedHeadClick);
+            })
+            .catch((back)=>{
+                // console.log(back);
+                // $("#div-signup").fadeOut(500);
+                alert("注册失败",1000,true);
+            });
         }
-
     });
-
+    $('#seller-good-table').bootstrapTable({
+        columns: [{
+            field: 'goodId',
+            title: '商品id'
+        }, {
+            field: 'goodName',
+            editable:true,
+            title: '商品名称'
+        }, {
+            field: 'goodtags',
+            editable:true,
+            title: '商品标签'
+        }, {
+            field: 'goodclasses',
+            editable:true,
+            title: '商品类别'
+        }, {
+            field: 'goodOPrice',
+            editable:true,
+            title: '商品原价'
+        }, {
+            field: 'goodDiscount',
+            editable:true,
+            title: '商品折扣'
+        }, {
+            field: 'goodPrice',
+            title: '商品价格'
+        }],
+        data: [{
+            goodId: "aaaaa",
+            goodName: 'Item 1',
+            goodOPrice: '$1',
+        }, {
+            id: 2,
+            name: 'Item 2',
+            price: '$2'
+        }]
+    });
     $("#login-login-btn").click(()=>{
         let err = 0;
         let user = $("#login-user-input").val();
@@ -225,16 +256,23 @@ $(document).ready(function(){
             login({user:user,passwd:passwd}).then((back)=>{
                 if(back.status === 0){
                     if(back.result == true){
-                        alert("登录成功",3000,true);
+                        alert("登录成功",1000,true);
                         $("#div-login").fadeOut(500);
+                        $("#nav-head").unbind("click");
+                        $("#nav-head").attr("id","nav-head-logged");
+                        $("#nav-head-logged").hover(loggedHeadClick);
+
                     }else{
-                        alert("账号或密码错误",3000,false);
+                        alert("账号或密码错误",1000,false);
                     }
                 }else{
-                    alert("登录异常,请稍后再试",3000,false);
+                    // console.log("aaaa");
+                    console.log(back);
+                    alert("登录异常,请稍后再试",1000,false);
                 }
             }).catch((back)=>{
-                alert("登录异常,请稍后再试",3000,false);
+                console.log(back);
+                alert("登录异常,请稍后再试",1000,false);
             });
         }
     });
@@ -249,5 +287,71 @@ $(document).ready(function(){
         $("#login-passwd-prompt-lab").html("");
     });
 
+    $("#user-option-quit").click(()=>{
+        logout().then((back)=>{
+            $("#nav-head-logged").unbind("mouseenter").unbind("mouseleave");
+            $("#nav-head-logged").attr("id","nav-head");
+            $("#nav-head").click(unloggedHeadClick);
+            $("#div-user-option").fadeOut(10);
+            alert("退出登录成功",1000,true);
+        }).catch((back)=>{
+            alert("退出登录异常，请稍后再试",1000,true);
+        });
+    });
+
+    $("#user-option-center").click(()=>{
+        // $("#div-cover-layer").fadeIn(500);
+        getUserInfo().then((back)=>{
+            initUserCenter(back.result);
+            showCoverLayer();
+            $("#div-user-center").fadeIn(500);
+        }).catch((back)=>{
+            console.log(back);
+        })
+        console.log("aaaa");
+    });
+
+    $(window).resize(()=>{
+        // $("body").css("width",$(window).width());
+        let width = parseInt(document.documentElement.clientWidth);
+        // console.log(width);
+        if(width > 1366){
+            window.onscroll = function(){};
+            $("#nav").css("left",(width-1366)/2.0 + "px");
+            $("#div-user-option").css("left",(width-1366)/2.0+1266+ "px");
+        }else{
+            window.onscroll=function(){
+                // console.log("aaassssddd");
+                let sl=-Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
+                $('#nav').css("left",sl+'px');
+                $('#div-user-option').css("left",sl+1266+'px');
+            }
+            $("#nav").css("left",0 + "px");
+            $('#div-user-option').css("left",1266+'px');
+        }
+    });
+    // $('#nav').scrollFixed({fixed:'left'});
     // loadUserHead("user-head");
+
+    // $("body").css("width",$(window).width());
+    let width = parseInt(document.documentElement.clientWidth);
+    console.log(width);
+    if(width > 1366){
+        window.onscroll = function(){};
+        $("#nav").css("left",(width-1366)/2.0 + "px");
+        $("#div-user-option").css("left",(width-1366)/2.0+1266+ "px");
+    }else{
+        window.onscroll=function(){
+            console.log("aaassssddd");
+            let sl=-Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
+            $('#nav').css("left",sl+'px');
+            $('#div-user-option').css("left",sl+1266+'px');
+        }
+        $("#nav").css("left",0 + "px");
+        $('#div-user-option').css("left",1266+'px');
+    }
+
+    $("#div-user-option").hover(()=>{},()=>{
+        $("#div-user-option").fadeOut(500);
+    });
 });

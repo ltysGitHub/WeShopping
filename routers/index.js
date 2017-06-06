@@ -14,9 +14,9 @@ router.use(function timeLog(req, res, next) {
 router.get('/', function(req, res){
     // req.session.user = "中文测试";
     if(typeof req.session.userId === 'string'){
-        res.render('index',{userHeader:"../static/image/user.png"});
+        res.render('index',{userHeader:"../static/image/user.png",logged:true});
     }else{
-        res.render('index');
+        res.render('index',{userHeader:"../static/image/user.png",logged:false});
     }
 
 });
@@ -24,10 +24,10 @@ router.get('/', function(req, res){
 router.get('/index', function(req, res){
     if(typeof req.session.userId === 'string'){
         console.log(req.session.userId);
-        res.render('index',{userHeader:"../static/image/user.png"});
+        res.render('index',{userHeader:"../static/image/user.png",logged:true});
     }else{
         console.log('no login');
-        res.render('index');
+        res.render('index',{userHeader:"../static/image/user.png",logged:false});
     }
     // console.log(req.session.user);
     // req.session.user = "中文测试";
@@ -37,10 +37,10 @@ router.get('/index', function(req, res){
 router.get('/index.html', function(req, res){
     if(typeof req.session.userId === 'string'){
         console.log(req.session.userId);
-        res.render('index',{userHeader:"../static/image/user.png"});
+        res.render('index',{userHeader:"../static/image/user.png",logged:true});
     }else{
         console.log('no login');
-        res.render('index');
+        res.render('index',{userHeader:"../static/image/user.png",logged:false});
     }
 });
 

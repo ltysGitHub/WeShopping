@@ -4,19 +4,28 @@
 
 let express = require('express');
 let router = express.Router();
-let ejs = require('ejs');
+let mysql = require('../mysql/Mysql');
 
-router.get('/header', function(req, res){
-    let back = {status:1}
-    if(typeof req.session.UserId === 'string'){
+router.post('/header', function(req, res){
+    if(typeof req.session.userId === 'string'){
 
+    }else{
+        let back = {status:10};
+        res.send(back);
     }
-    res.send(back);
 });
 
-router.get('/info', function(req, res){
-    let back = {status:1}
-    res.send(back);
+router.post('/info', function(req, res){
+    if(typeof req.session.userId === 'string'){
+        new mysql("root","liutengying").getUserInfoById(req.session.userId).then((back)=>{
+            res.send(back);
+        }).catch((back)=>{
+            res.send(back);
+        });
+    }else{
+        let back = {status:10};
+        res.send(back);
+    }
 });
 
 

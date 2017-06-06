@@ -19,14 +19,8 @@ class Mysql{
      * @returns {Promise} back
      */
     addUser(info){
-        let con = mysql.createConnection({
-            host:this.host,
-            user:this.user,
-            password:this.passwd,
-            database:this.database
-        });
         return new Promise((resolve,reject)=>{
-            if(typeof info.email !== 'string' || typeof info.phone !== 'string' || typeof info.passwd !== 'string' || typeof info.name !== 'string'){
+            if(typeof info.email !== 'string' || typeof info.phone !== 'string' || typeof info.type !== 'string' || typeof info.passwd !== 'string' || typeof info.name !== 'string'){
                 console.log(info);
                 let back = {status:1};
                 reject(back);
@@ -34,9 +28,16 @@ class Mysql{
                 let back = {status:1};
                 reject(back);
             }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
                 info.email = con.escape(info.email);
                 info.phone = con.escape(info.phone);
                 info.passwd = con.escape(info.passwd);
+                info.type = con.escape(info.type);
                 info.name = con.escape(info.name);
                 let sql = `select COUNT(*) count from users where
                             users.phone = ${info.phone}
@@ -56,12 +57,12 @@ class Mysql{
                                 }else{
                                     let id = uuid.v1();
 
-                                    let sql = `insert into users(id,name,email,phone`;
+                                    let sql = `insert into users(id,name,email,phone,type`;
                                     if(typeof info.sex === 'string'){
                                         info.sex = con.escape(info.sex);
-                                        sql += `,sex) values('${id}',${info.name},${info.email},${info.phone},${info.sex});`;
+                                        sql += `,sex) values('${id}',${info.name},${info.email},${info.phone},${info.type},${info.sex});`;
                                     }else{
-                                        sql +=`) values('${id}',${info.name},${info.email},${info.phone});`;
+                                        sql +=`) values('${id}',${info.name},${info.email},${info.phone},${info.type});`;
                                     }
 
                                     console.log(sql);
@@ -127,17 +128,17 @@ class Mysql{
      * @returns {Promise}   参数{status:***,result:***}，若存在则返回true，不存在返回false
      */
     checkEmail(email){
-        let con = mysql.createConnection({
-            host:this.host,
-            user:this.user,
-            password:this.passwd,
-            database:this.database
-        });
         return new Promise((resolve,reject)=>{
             if(typeof email === 'undefined'){
                 let back = {status:1};
                 reject(back);
             }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
                 email = con.escape(email);
                 let sql = `select COUNT(*) count from users
                         where email = ${email}`;
@@ -170,17 +171,17 @@ class Mysql{
      * @returns {Promise}  {status:***,result:***}，若存在则返回true,否则返回false
      */
     checkPhone(phone){
-        let con = mysql.createConnection({
-            host:this.host,
-            user:this.user,
-            password:this.passwd,
-            database:this.database
-        });
         return new Promise((resolve,reject)=>{
             if(typeof phone === 'undefined'){
                 let back = {status:1};
                 reject(back);
             }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
                 phone = con.escape(phone);
                 let sql = `select COUNT(*) count from users
                             where phone = ${phone}`;
@@ -213,15 +214,15 @@ class Mysql{
      */
     checkUser(info){
         return new Promise((resolve,reject)=>{
-            let con = mysql.createConnection({
-                host:this.host,
-                user:this.user,
-                password:this.passwd,
-                database:this.database
-            });
             if(typeof info.user !== 'string' || typeof info.passwd !== 'string'){
                 let back = {status:1};
             }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
                 info.user = con.escape(info.user);
                 info.passwd = con.escape(info.passwd);
                 let sql = `select COUNT(*) count,users.id from users,pwd
@@ -248,7 +249,171 @@ class Mysql{
         });
     }
 
-    
+    /**
+     * 根据用户Id获取用户信息
+     * @param userId
+     * @returns {Promise} 获取成功时，status为0，result为信息json，否则status为错误代码，没有result
+     */
+    getUserInfoById(userId){
+        return new Promise((resolve,reject)=>{
+            if(typeof userId !== 'string'){
+                let back = {status:1};
+                reject(back);
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                userId = con.escape(userId);
+                let sql = `select * from users
+                            where id = ${userId};`;
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        con.end();
+                        // console.log(err);
+                        let back = {status:2};
+                        reject(back);
+                    }else{
+                        con.end();
+                        // console.log(result);
+                        if(result.length === 0){
+                            let back = {status:3};
+                            reject(back);
+                        }else{
+                            let back ={status:0,result:result[0]};
+                            resolve(back);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 添加订单
+     * @param info
+     * @returns {Promise}
+     */
+    addOrder(info){
+        return new Promise((resolve,reject)=>{
+            if(typeof info.good !== 'string' ||typeof info.price !== 'number' ||typeof info.buyer !== 'string' || typeof info.num !== 'number' || typeof info.addr !== 'string' || typeof info.message !== 'string' || typeof info.class !== 'string'){
+                let back = {status:1};
+                reject(back);
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                info.good = con.escape(info.good);
+                info.buyer = con.escape(info.buyer);
+                info.addr = con.escape(info.addr);
+                info.class = con.escape(info.class);
+                info.message = con.escape(info.message);
+                let sql = `select * from goods
+                            where id = ${good}`;
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        con.end();
+                        let back = {status:2};
+                        reject(back);
+                    }else{
+                        if(result.length === 0 || result[0].rest < num){
+                            con.end();
+                            let back = {status:3};
+                            reject(back);
+                        }else{
+                            let goodInfo = result[0];
+                            con.beginTransaction((err)=>{
+                                if(err){
+                                    con.end();
+                                    let back = {status:4};
+                                    reject(back);
+                                }else{
+                                    let newRest = result[0].rest - num;
+                                    let sql = `update goods set rest = ${newRest}
+                                                where id = ${good};`
+                                    con.query(sql,(err,result)=>{
+                                        if(err){
+                                            con.rollback();
+                                            con.end();
+                                            let back = {status:5};
+                                            reject(back);
+                                        }else{
+                                            let id = uuid.v1();
+                                            let date = new Date().toLocaleString();
+                                            let sql = `insert into orders(id,orderDate,good,num,class,buyer,seller,addr,price,message,status)
+                                                        values('${id}','${date}',${info.good},${info.num},${info.class},${info.buyer},'${goodInfo.seller}',${info.addr},${info.price},${info.message},'u');`
+                                            con.query(sql,(err,result)=>{
+                                                if(err){
+                                                    con.rollback();
+                                                    con.end();
+                                                    let back = {status:6};
+                                                    reject(back);
+                                                }else{
+                                                    con.commit((err)=>{
+                                                        if(err){
+                                                            con.rollback();
+                                                        }
+                                                        con.end();
+                                                    });
+                                                    let back = {status:0};
+                                                    resolve(back);
+                                                }
+                                            });
+                                        }
+                                    })
+                                }
+                            });
+                        }
+                    }
+                })
+            }
+        });
+    }
+
+    /**
+     *
+     */
+    addGood(info){
+        return new Promise((resolve,reject)=>{
+            if(typeof info.name !== 'string' || info.rest !== 'number' || info.price !== 'number'  || info.seller !== 'number'){
+                let back = {status:1};
+                reject(back);
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                userId = con.escape(userId);
+                let sql = `select * from users
+                            where id = ${userId};`;
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        con.end();
+                        // console.log(err);
+                        let back = {status:2};
+                        reject(back);
+                    }else{
+                        con.end();
+                        // console.log(result);
+                        if(result.length === 0){
+                            let back = {status:3};
+                            reject(back);
+                        }else{
+                            let back ={status:0,result:result[0]};
+                            resolve(back);
+                        }
+                    }
+                });
+            }
+        });
+    }
 }
 
 // console.log(uuid.v1());
@@ -284,6 +449,16 @@ class Mysql{
 //     .catch((back)=>{
 //         console.log(back);
 //     });
+
+// new Mysql("root","liutengying").getUserInfoById("2562f140-44ff-11e7-a0b4-bd905294d74c")
+//     .then((back)=>{
+//         console.log(back);
+//     })
+//     .catch((back)=>{
+//         console.log(back);
+//     });
+
+
 
 
 module.exports = Mysql;

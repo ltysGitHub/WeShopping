@@ -13,9 +13,27 @@ function login(info){
                 if(back.status === 0){
                     resolve(back);
                 }else{
+                    console.log("wwwww");
                     reject(back);
                 }
             }
         });
-    })
+    });
+}
+
+function logout(){
+    return new Promise((resolve,reject)=>{
+        $.ajax({
+            type:"POST",
+            url:"../logout/",
+            success:(back)=>{
+                console.log(back);
+                if(back.status === 0){
+                    resolve(back);
+                }else{
+                    reject(back);
+                }
+            }
+        });
+    });
 }
