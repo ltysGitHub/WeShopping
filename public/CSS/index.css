@@ -44,7 +44,7 @@ img{
     background:#f6f6f6;
     box-shadow: 0 0 18px #e6e6e6;
     position:fixed;
-    z-index: 20;
+    /*z-index: 20;*/
     /*border-radius: 6px;*/
 }
 
@@ -411,8 +411,8 @@ img{
     background-color: #f6f6f6;
     box-shadow:0 0 18px #e6e6e6;
     position: absolute;
-    z-index: 11;
-    top:250px;
+    z-index: 20;
+    top:150px;
     left:483px;
     display: none;
 }
@@ -559,7 +559,7 @@ img{
     border-radius: 10px;
     background-color: #f6f6f6;
     box-shadow:0 0 18px #e6e6e6;
-    /*display: none;*/
+    display: none;
     z-index: 14;
     /*display: inline-block;*/
     width: 1000px;
@@ -569,6 +569,14 @@ img{
     /*margin:auto;*/
     /*left: 183px;*/
     right:183px;
+}
+
+.seller-good-title{
+    height: 40px;
+    line-height: 40px;
+    margin-top: 10px;
+    /*font-size: x-large;*/
+    text-align: center;
 }
 
 .seller-good-cancel{
@@ -589,6 +597,7 @@ img{
 }
 
 .div-seller-good-table{
+    /*margin-top:50px; */
     position: relative;
     /*left:25px;*/
     width: 1000px;
@@ -600,14 +609,20 @@ th{
     text-align: center;
 }
 
-.seller-good-table-option{
+.seller-good-add-btn,
+.seller-good-delete-btn{
+    width: 100px;
+    margin-left: 10px;
+}
+
+/*.seller-good-table-option{
     text-align: center;
 }
 
 .seller-good-table-option:hover{
     cursor: pointer;
     background-color: #ffffff;
-}
+}*/
 
 caption{
     text-align: center;
@@ -615,6 +630,10 @@ caption{
 
 caption h2{
     margin: 0;
+}
+
+.span-hover:hover{
+    cursor: pointer;
 }
 
 /*.user-option-quit:hover{*/

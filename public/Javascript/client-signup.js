@@ -16,19 +16,6 @@ function checkPhone(phone){
     });
 }
 
-function checkEmail(email){
-    return new Promise((resolve,reject)=>{
-        $.ajax({
-            type:"POST",
-            url:"../signup/check/email",
-            data:{email:email},
-            success:(back)=>{
-                console.log(back);
-                resolve(back);
-            }
-        });
-    });
-}
 
 function signup(info){
     return new Promise((resolve,reject)=>{

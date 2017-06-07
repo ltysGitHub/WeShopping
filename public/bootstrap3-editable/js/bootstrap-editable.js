@@ -2930,7 +2930,7 @@ $(function(){
         activate: function() {
             if(this.$input.is(':visible')) {
                 this.$input.focus();
-                if (this.$input.is('input,textarea') && !this.$input.is('[type="checkbox"],[type="range"]')) {
+                if (this.$input.is('input,textarea') && !this.$input.is('[type="checkbox"],[type="range"],[type="number"]')) {
                     $.fn.editableutils.setCursorPosition(this.$input.get(0), this.$input.val().length);
                 }
                 if(this.toggleClear) {
@@ -2961,7 +2961,7 @@ $(function(){
                           .parent().css('position', 'relative');
                           
                this.$clear.click($.proxy(this.clear, this));                       
-           }            
+           }
         },
         
         postrender: function() {

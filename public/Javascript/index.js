@@ -18,6 +18,7 @@ $(document).ready(function(){
         $("#alert").fadeOut(500);
         $("#div-user-center").fadeOut(500);
         $("#div-cover-layer").fadeOut(500);
+        hideGoods();
     });
 
     $("#login-signup-btn").click(function(){
@@ -200,44 +201,7 @@ $(document).ready(function(){
             });
         }
     });
-    $('#seller-good-table').bootstrapTable({
-        columns: [{
-            field: 'goodId',
-            title: '商品id'
-        }, {
-            field: 'goodName',
-            editable:true,
-            title: '商品名称'
-        }, {
-            field: 'goodtags',
-            editable:true,
-            title: '商品标签'
-        }, {
-            field: 'goodclasses',
-            editable:true,
-            title: '商品类别'
-        }, {
-            field: 'goodOPrice',
-            editable:true,
-            title: '商品原价'
-        }, {
-            field: 'goodDiscount',
-            editable:true,
-            title: '商品折扣'
-        }, {
-            field: 'goodPrice',
-            title: '商品价格'
-        }],
-        data: [{
-            goodId: "aaaaa",
-            goodName: 'Item 1',
-            goodOPrice: '$1',
-        }, {
-            id: 2,
-            name: 'Item 2',
-            price: '$2'
-        }]
-    });
+
     $("#login-login-btn").click(()=>{
         let err = 0;
         let user = $("#login-user-input").val();
@@ -261,7 +225,7 @@ $(document).ready(function(){
                         $("#nav-head").unbind("click");
                         $("#nav-head").attr("id","nav-head-logged");
                         $("#nav-head-logged").hover(loggedHeadClick);
-
+                        $("#user-center-submit-show-good-btn").removeClass("disabled");
                     }else{
                         alert("账号或密码错误",1000,false);
                     }
@@ -302,13 +266,44 @@ $(document).ready(function(){
     $("#user-option-center").click(()=>{
         // $("#div-cover-layer").fadeIn(500);
         getUserInfo().then((back)=>{
+
             initUserCenter(back.result);
             showCoverLayer();
             $("#div-user-center").fadeIn(500);
         }).catch((back)=>{
             console.log(back);
-        })
+        });
         console.log("aaaa");
+    });
+
+    $("#user-center-submit-show-good-btn").click(()=>{
+        $("#div-user-center").fadeOut(500);
+        showGoods();
+    });
+
+    $("#seller-good-cancel").click(()=>{
+        console.log("aaa");
+        $("#div-cover-layer").fadeOut(500);
+        hideGoods();
+    });
+
+    $("#seller-good-add-btn").click(()=>{
+        createId().then((back)=>{
+            $('#seller-good-table').bootstrapTable('prepend',{goodId:back.result,goodName:"",goodPrice:"0",goodDiscount:"1.0",goodTags:"",goodClasses:"",goodRest:"0"});
+        }).catch((back)=>{
+            console.log(back);
+            alert("异常操作,请稍后重试",1000,false);
+        });
+    });
+
+    $("#seller-good-delete-btn").click(()=>{
+        let selects = $('#seller-good-table').bootstrapTable('getSelections');
+        // console.log(JSON.stringify(selects));
+        for(let select of selects){
+
+            // console.log(select);
+            $('#seller-good-table').bootstrapTable('removeByUniqueId',select.goodId);
+        }
     });
 
     $(window).resize(()=>{

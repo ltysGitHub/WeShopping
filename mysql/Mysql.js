@@ -377,10 +377,308 @@ class Mysql{
 
     /**
      *
+     * @param goodId
+     * @returns {*}
      */
-    addGood(info){
+    getGoodInfoById(goodId){
         return new Promise((resolve,reject)=>{
-            if(typeof info.name !== 'string' || info.rest !== 'number' || info.price !== 'number'  || info.seller !== 'number'){
+            if(typeof goodId !== "string"){
+                reject({status:1});
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                goodId = con.escape(goodId);
+                let sql = `select * from goods
+                            where id = ${goodId}`;
+                // console.log(sql);
+                con.query(sql,(err,result)=>{
+                    con.end();
+                    if(err){
+                        reject({status:2});
+                    }else{
+                        resolve({status:0,result:result});
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     *
+     * @param info
+     * @returns {*}
+     */
+    insertGood(info){
+        return new Promise((resolve,reject)=>{
+            if(typeof info.id !== 'string' || typeof info.name !== 'string' ||typeof info.rest !== 'number' ||typeof info.price !== 'number'  ||typeof info.seller !== 'string'){
+                console.log(info);
+                let back = {status:1};
+                reject(back);
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                info.id = con.escape(info.id);
+                info.name = con.escape(info.name);
+                info.price = con.escape(info.price);
+                info.rest = con.escape(info.rest);
+                info.seller = con.escape(info.seller);
+                let sql = `insert into goods(id,name,rest,saleVolume,price,seller`
+                let values = ` values(${info.id},${info.name},${info.rest},0,${info.price},${info.seller}`;
+                if(typeof info.class === "string"){
+                    sql += `,class`;
+                    info.class = con.escape(info.class);
+                    values += `,${info.class}`;
+                }
+                if(typeof info.tag === "string"){
+                    sql += `,tag`;
+                    info.tag = con.escape(info.tag);
+                    values += `,${info.tag}`;
+                }
+                if(typeof info.discount === "number"){
+                    sql += `,discount`;
+                    info.discount = con.escape(info.discount);
+                    values += `,${info.discount}`;
+                }else{
+                    sql += `,discount`;
+                    values += `,1.0`;
+                }
+                sql += `)`;
+                values += `);`;
+                sql += values;
+                console.log(sql);
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        console.log(err);
+                        let back = {status:1};
+                        con.end();
+                        reject(back);
+                    }else{
+                        let back = {status:0};
+                        con.end();
+                        resolve(back);
+                    }
+                });
+            }
+        })
+    }
+
+
+    /**
+     *
+     * @param info
+     * @returns {*}
+     */
+    updateGood(info){
+        return new Promise((resolve,reject)=>{
+            if(typeof info.id !== "string"){
+                reject({status:1});
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                info.id = con.escape(info.id);
+                let sql = `update goods `;
+                if(typeof info.class === "string"){
+                    info.class = con.escape(info.class);
+                    sql += `set class = ${info.class}`;
+                }
+                if(typeof info.tag === "string"){
+                    info.tag = con.escape(info.tag);
+                    if(sql == `update goods `){
+                        sql += `set tag = ${info.tag}`;
+                    }else{
+                        sql += `,tag = ${info.tag}`;
+                    };
+                }
+                if(typeof info.price === "number"){
+                    info.price = con.escape(info.price);
+                    if(sql == `update goods `){
+                        sql += `set price = ${info.price}`;
+                    }else{
+                        sql += `,price = ${info.price}`;
+                    };
+                }
+                if(typeof info.discount === "number"){
+                    info.discount = con.escape(info.discount);
+                    if(sql == `update goods `){
+                        sql += `set discount = ${info.discount}`;
+                    }else{
+                        sql += `,discount = ${info.discount}`;
+                    };
+                }
+                if(typeof info.name === "string"){
+                    info.name = con.escape(info.name);
+                    if(sql == `update goods `){
+                        sql += `set name = ${info.name}`;
+                    }else{
+                        sql += `,name = ${info.name}`;
+                    };
+                }
+                if(typeof info.rest === "number"){
+                    info.rest = con.escape(info.rest);
+                    if(sql == `update goods `){
+                        sql += `set rest = ${info.rest}`;
+                    }else{
+                        sql += `,rest = ${info.rest}`;
+                    };
+                }
+                sql += ` where id = ${info.id};`
+                console.log(sql);
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        console.log(err);
+                        let back = {status:1};
+                        con.end();
+                        reject(back);
+                    }else{
+                        let back = {status:0};
+                        con.end();
+                        resolve(back);
+                    }
+                });
+            }
+        })
+    }
+
+    getOrderByGood(goodId){
+        return new Promise((resolve,reject)=>{
+            if(typeof goodId !== "string"){
+                reject({status:1});
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                goodId = con.escape(goodId);
+                let sql = `select * from orders
+                            where good=${goodId}`;
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        con.end();
+                        reject({status:2});
+                    }else{
+                        con.end();
+                        resolve({status:0,result:result});
+                    }
+                });
+            }
+        });
+    }
+
+    deleteGood(info){
+        return new Promise((resolve,reject)=>{
+            if(typeof info.goodId !== "string" || typeof info.seller !== "string"){
+                reject({status:1});
+            }else{
+                this.getOrderByGood(info.goodId).then((back)=>{
+                    if(back.result.length != 0){
+                        reject({status:2});
+                    }else{
+                        let con = mysql.createConnection({
+                            host:this.host,
+                            user:this.user,
+                            password:this.passwd,
+                            database:this.database
+                        });
+                        info.goodId = con.escape(info.goodId);
+                        info.seller = con.escape(info.seller);
+                        let sql = `delete from goods
+                            where id = ${info.goodId} and seller = ${info.seller}`;
+                        con.query(sql,(err,result)=>{
+                            if(err){
+                                console.log(err);
+                                con.end();
+                                reject({status:3});
+                            }else{
+                                con.end();
+                                resolve({status:0});
+                            }
+                        });
+                    }
+                }).catch((back)=>{
+                    console.log(back);
+                    reject({status:5});
+                });
+            }
+        });
+    }
+
+    /**
+     *
+     * @param info
+     * @returns {Promise}
+     */
+    addOrUpdateGood(info){
+        return new Promise((resolve,reject)=>{
+            if(typeof info.name !== 'string' ||typeof info.rest !== 'number' ||typeof info.price !== 'number'  ||typeof info.seller !== 'string'){
+                // console.log("aaawewewe"+info);
+                let back = {status:1};
+                reject(back);
+            }else{
+                this.getUserInfoById(info.seller).then((back)=>{
+                    if(back.result.type === 's'){
+                        if(typeof info.id === "string"){
+                            this.getGoodInfoById(info.id).then((back)=>{
+                                if(back.result.length === 0){
+                                    this.insertGood(info).then((back)=>{
+                                        resolve(back);
+                                    }).catch((back)=>{
+                                        reject(back);
+                                    });
+                                }else{
+                                    if(back.result[0].seller !== info.seller){
+                                        reject({status:10});
+                                    }else{
+                                        this.updateGood(info).then((back)=>{
+                                            resolve(back);
+                                        }).catch((back)=>{
+                                            reject(back);
+                                        });
+                                    }
+                                }
+                            }).catch((back)=>{
+                                reject(back);
+                            });
+                        }else{
+                            info.id = uuid.v1();
+                            this.insertGood(info).then((back)=>{
+                                resolve(back);
+                            }).catch((back)=>{
+                                reject(back);
+                            });
+                        }
+
+                    }else{
+                        reject({status:2});
+                    }
+                }).catch((back)=>{
+                    reject(back);
+                });
+            }
+        });
+    }
+
+    /**
+     *
+     * @param userId
+     * @returns {Promise}
+     */
+    getGoodInfo(userId){
+        return new Promise((resolve,reject)=>{
+            if(typeof userId !== 'string'){
                 let back = {status:1};
                 reject(back);
             }else{
@@ -391,26 +689,17 @@ class Mysql{
                     database:this.database
                 });
                 userId = con.escape(userId);
-                let sql = `select * from users
-                            where id = ${userId};`;
+                let sql = `select id goodId,name goodName,class goodClasses,tag goodTags,discount goodDiscount,rest goodRest,price goodPrice from goods
+                            where seller = ${userId}`;
                 con.query(sql,(err,result)=>{
                     if(err){
-                        con.end();
-                        // console.log(err);
-                        let back = {status:2};
+                        let back = {status:2,errM:err.message};
                         reject(back);
                     }else{
-                        con.end();
-                        // console.log(result);
-                        if(result.length === 0){
-                            let back = {status:3};
-                            reject(back);
-                        }else{
-                            let back ={status:0,result:result[0]};
-                            resolve(back);
-                        }
+                        let back = {status:0,result:result};
+                        resolve(back);
                     }
-                });
+                })
             }
         });
     }
@@ -458,6 +747,24 @@ class Mysql{
 //         console.log(back);
 //     });
 
+// new Mysql("root","liutengying").addOrUpdateGood({id:"994cb380-4b7f-11e7-aa9a-cf7eb7ac36c7",seller:"409514c0-499b-11e7-8b46-0fade443ec98",name:"大家伙",price:99.9,rest:20}).then((back)=>{
+//     console.log(back);
+// }).catch((back)=>{
+//     console.log(back);
+// });
+
+// new Mysql("root","liutengying").getGoodInfo("409514c0-499b-11e7-8b46-0fade443ec98").then((back)=>{
+//     console.log(back);
+// }).catch((back)=>{
+//     console.log(back);
+// });
+
+
+// new Mysql("root","liutengying").deleteGood({goodId:"994cb380-4b7f-11e7-aa9a-cf7eb7ac36c7"}).then((back)=>{
+//     console.log(back);
+// }).catch((back)=>{
+//     console.log(back);
+// });
 
 
 
