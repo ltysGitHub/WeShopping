@@ -134,6 +134,8 @@ function showGoods(){
                 return [
                     '<a class="save" title="保存修改"><span class="span-hover glyphicon glyphicon-save"></span></a>',
                     '&nbsp',
+                    '<a class="picture" title="商品图片"><span class="span-hover glyphicon glyphicon-picture"></span></a>',
+                    '&nbsp',
                     '<a class="delete" title="删除货物"><span class="span-hover glyphicon glyphicon-remove"></span></a>'
                 ].join('');
             },
@@ -184,9 +186,37 @@ function showGoods(){
                             }else{
                                 alert("删除异常，请稍后重试",1000,false);
                             }
-                        })
+                        });
                     }
                 },
+                'click .picture':function(e, value, row, index){
+                    if(typeof row.goodId !== 'undefined' && row.goodId != ""){
+                        $("#picture-upload").fileinput({
+                            uploadUrl:"../../user/uploadGoodPic",
+                            previewSettings:{
+                                image: {width: "200px", height: "200px"}
+                            },
+                            // showClose:true,
+                            resizeImage:true,
+                            maxImageWidth: 240,
+                            maxImageHeight: 500,
+                            allowedFileTypes: ['image'],
+                            allowedPreviewTypes: ['image'],
+                            allowedFileExtensions:['png'],
+                            maxFileCount:1,
+                            showRemove:false,
+                            validateInitialCount:true,
+                            dropZoneTitle:"将图片拖动到此处",
+                            uploadExtraData:{goodId:row.goodId}
+                        });
+                        $('#picture-upload').on('fileclear', function(event) {
+                            console.log("fileclear");
+                            $('#picture-upload').fileinput('destroy');
+                            $('#div-picture-upload').fadeOut(500);
+                        });
+                        $("#div-picture-upload").fadeIn(500);
+                    }
+                }
             }
         }],
         cache: false,
@@ -283,5 +313,33 @@ function initUserCenter(info){
     }else{
         $("#user-center-type-origin-btn").addClass("active");
     }
-
 }
+
+function fillGoodList(result){
+    for(let good of result){
+        let html = `<div class="good">
+                <div class="good-photo">
+                    <img src="static/goodPic/${good.id}/0.png" alt="暂无图片" class="good-img" id="img-src"/>
+                </div>
+                <div class="div-good-name">
+                    <label class="good-name-lab">${good.name}</label>
+                </div>
+                <div class="div-good-price">
+                    <label class="good-price-lab"><s>￥${good.price}</s>￥${good.price*good.discount}</label>
+                </div>
+                <div class="div-good-option">
+                    <label class="good-shop-cart-btn btn btn-primary">加入购物车</label>
+                    <label class="good-buy-btn btn btn-success" goodid="${good.id}">立即购买</label>
+                </div>
+            </div>`;
+        $("#good-list").append(html);
+    }
+    $("#good-list").fadeIn(100);
+}
+
+function clearGoodList(){
+    $("#good-list").fadeOut(100);
+    $("#good-list").html("");
+}
+
+

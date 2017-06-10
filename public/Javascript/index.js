@@ -18,6 +18,8 @@ $(document).ready(function(){
         $("#alert").fadeOut(500);
         $("#div-user-center").fadeOut(500);
         $("#div-cover-layer").fadeOut(500);
+        $('#picture-upload').fileinput('destroy');
+        $('#div-picture-upload').fadeOut(500);
         hideGoods();
     });
 
@@ -82,18 +84,6 @@ $(document).ready(function(){
         $("#signup-email-prompt-lab").html("");
     });
 
-    // $("#signup-name-input").blur(function(){
-    //     let name = $(this).val();
-    //
-    //     if(name != ""){
-    //         $("#signup-name").removeClass("has-error");
-    //         $("#signup-name-prompt-lab").html("");
-    //     }else{
-    //         $("#signup-name").addClass("has-error");
-    //         $("#signup-name-prompt-lab").html("姓名不能为空");
-    //     }
-    // });
-
     $("#signup-name-input").focus(function(){
         $("#signup-name").removeClass("has-error");
         $("#signup-name-prompt-lab").html("");
@@ -138,9 +128,6 @@ $(document).ready(function(){
         $("#signup-phone").removeClass("has-success");
         $("#signup-phone-prompt-lab").html("");
     });
-
-
-
 
     $("#alert").click(()=>{
         $("#alert").fadeOut(500);
@@ -193,6 +180,7 @@ $(document).ready(function(){
                 $("#nav-head").unbind("click");
                 $("#nav-head").attr("id","nav-head-logged");
                 $("#nav-head-logged").hover(loggedHeadClick);
+                initUser();
             })
             .catch((back)=>{
                 // console.log(back);
@@ -225,7 +213,7 @@ $(document).ready(function(){
                         $("#nav-head").unbind("click");
                         $("#nav-head").attr("id","nav-head-logged");
                         $("#nav-head-logged").hover(loggedHeadClick);
-                        $("#user-center-submit-show-good-btn").removeClass("disabled");
+                        initUser();
                     }else{
                         alert("账号或密码错误",1000,false);
                     }
@@ -249,61 +237,6 @@ $(document).ready(function(){
     $("#login-passwd-input").focus(()=>{
         $("#login-passwd").removeClass("has-error");
         $("#login-passwd-prompt-lab").html("");
-    });
-
-    $("#user-option-quit").click(()=>{
-        logout().then((back)=>{
-            $("#nav-head-logged").unbind("mouseenter").unbind("mouseleave");
-            $("#nav-head-logged").attr("id","nav-head");
-            $("#nav-head").click(unloggedHeadClick);
-            $("#div-user-option").fadeOut(10);
-            alert("退出登录成功",1000,true);
-        }).catch((back)=>{
-            alert("退出登录异常，请稍后再试",1000,true);
-        });
-    });
-
-    $("#user-option-center").click(()=>{
-        // $("#div-cover-layer").fadeIn(500);
-        getUserInfo().then((back)=>{
-
-            initUserCenter(back.result);
-            showCoverLayer();
-            $("#div-user-center").fadeIn(500);
-        }).catch((back)=>{
-            console.log(back);
-        });
-        console.log("aaaa");
-    });
-
-    $("#user-center-submit-show-good-btn").click(()=>{
-        $("#div-user-center").fadeOut(500);
-        showGoods();
-    });
-
-    $("#seller-good-cancel").click(()=>{
-        console.log("aaa");
-        $("#div-cover-layer").fadeOut(500);
-        hideGoods();
-    });
-
-    $("#seller-good-add-btn").click(()=>{
-        createId().then((back)=>{
-            $('#seller-good-table').bootstrapTable('prepend',{goodId:back.result,goodName:"",goodPrice:"0",goodDiscount:"1.0",goodTags:"",goodClasses:"",goodRest:"0"});
-        }).catch((back)=>{
-            console.log(back);
-            alert("异常操作,请稍后重试",1000,false);
-        });
-    });
-
-    $("#seller-good-delete-btn").click(()=>{
-        let selects = $('#seller-good-table').bootstrapTable('getSelections');
-        // console.log(JSON.stringify(selects));
-        for(let select of selects){
-
-            // console.log(select);
-            $('#seller-good-table').bootstrapTable('removeByUniqueId',select.goodId);
-        }
     });
 
     $(window).resize(()=>{
@@ -337,7 +270,7 @@ $(document).ready(function(){
         $("#div-user-option").css("left",(width-1366)/2.0+1266+ "px");
     }else{
         window.onscroll=function(){
-            console.log("aaassssddd");
+            // console.log("aaassssddd");
             let sl=-Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
             $('#nav').css("left",sl+'px');
             $('#div-user-option').css("left",sl+1266+'px');
@@ -349,4 +282,33 @@ $(document).ready(function(){
     $("#div-user-option").hover(()=>{},()=>{
         $("#div-user-option").fadeOut(500);
     });
+
+    loadGood(0).then((back)=>{
+        fillGoodList(back.result);
+    }).catch((back)=>{
+        alert("商品加载异常,请稍后刷新页面",3000,true);
+    });
+
+    $("#search-btn").click(()=>{
+        let keyword = $("#search-input").val();
+        clearGoodList();
+        console.log(keyword);
+        if(keyword == ""){
+            console.log("aawewe"+keyword);
+            loadGood(0).then((back)=>{
+                fillGoodList(back.result);
+            }).catch((back)=>{
+                alert("商品加载异常,请稍后刷新页面",3000,true);
+            });
+        }else{
+            loadGoodByKeyWord(0,keyword).then((back)=>{
+                fillGoodList(back.result);
+            }).catch((back)=>{
+                alert("商品加载异常,请稍后刷新页面",3000,true);
+            });
+        }
+    });
+
+    initUser();
 });
+
