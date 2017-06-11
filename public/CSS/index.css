@@ -634,6 +634,82 @@ th{
     margin-left: 10px;
 }
 
+
+
+.div-order{
+    width:400px;
+    height:350px;
+    padding:15px;
+    position:absolute;
+    top:50px;
+    left:483px;
+    z-index:10;
+    border-radius: 10px;
+    background-color: #f6f6f6;
+    box-shadow:0 0 18px #e6e6e6;
+    display: none;
+    /*background-color:;*/
+}
+
+.order-title{
+    display: inline-block;
+    line-height: 30px;
+    margin-bottom: 20px;
+    margin-right: 0px;
+    width:300px;
+    vertical-align:center;
+}
+
+.order-cancel:hover{
+    cursor: pointer;
+    /*font-size: 25px;*/
+}
+
+.order-cancel{
+    display: inline-block;
+    float: right;
+    line-height: 30px;
+    font-size: 20px;
+}
+
+
+.order-num,.order-addr,.order-message{
+
+}
+
+.order-num-lab,.order-addr-lab,.order-message-lab{
+    display: inline-block;
+    font-size: large;
+    margin:0;
+}
+
+.order-num-input,.order-addr-input,.order-message-input{
+    display: inline-block;
+    width:320px;
+}
+
+.order-num-prompt-lab,.order-addr-prompt-lab,.order-message-prompt-lab{
+    display:block;
+    height:30px;
+    width: 300px;
+    font-size: large;
+    margin-left: 40px;
+    line-height: 30px;
+}
+
+
+.order-submit{
+    width:100%;
+}
+
+.order-create-btn,.order-cancel-btn{
+    width:150px;
+}
+
+.order-cancel-btn{
+    margin-left: 50px;
+}
+
 /*.seller-good-table-option{
     text-align: center;
 }
@@ -654,6 +730,77 @@ caption h2{
 .span-hover:hover{
     cursor: pointer;
 }
+
+
+.div-order-confirm{
+    width:400px;
+    height:280px;
+    padding:15px;
+    position:absolute;
+    top:50px;
+    left:483px;
+    z-index:10;
+    border-radius: 10px;
+    background-color: #f6f6f6;
+    box-shadow:0 0 18px #e6e6e6;
+    display: none;
+    /*background-color:;*/
+}
+
+.order-title{
+    display: inline-block;
+    line-height: 30px;
+    margin-bottom: 20px;
+    margin-right: 0px;
+    width:300px;
+    vertical-align:center;
+}
+
+.order-confirm-num-lab,.order-confirm-addr-lab,.order-confirm-message-lab,.order-confirm-money-lab{
+    display:inline-block;
+    height:30px;
+    width: 300px;
+    font-size: large;
+    margin-left: 50px;
+    line-height: 30px;
+}
+
+.order-confirm-submit{
+    width:100%;
+}
+
+.order-confirm-confirm-btn,.order-confirm-cancel-btn{
+    width:150px;
+}
+
+.order-confirm-cancel-btn{
+    margin-left: 50px;
+}
+
+.div-order-table{
+    width:900px;
+    height:600px;
+    padding:15px;
+    position:absolute;
+    top:50px;
+    left:233px;
+    z-index:10;
+    border-radius: 10px;
+    background-color: #f6f6f6;
+    box-shadow:0 0 18px #e6e6e6;
+    display: none;
+}
+
+.order-table-cancel{
+    position:absolute;
+    right:10px;
+    top:10px;
+}
+
+.order-table-cancel:hover{
+    cursor: pointer;
+}
+
 
 /*.user-option-quit:hover{*/
     /*background-color: #bb4136;*/

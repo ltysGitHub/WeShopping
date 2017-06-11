@@ -12,6 +12,7 @@ let partials = require('express-partials');
 let bodyParser = require("body-parser");
 let session = require('express-session');
 let cookieParser = require('cookie-parser');
+
 let app = express();
 
 app.set('views', './views');
@@ -19,7 +20,9 @@ app.use('/static',express.static(path.join(__dirname,'public')));
 app.set('view engine', 'ejs');
 app.engine('ejs', require('ejs').__express);
 app.use(bodyParser.urlencoded({extended:false}));
+
 app.use(cookieParser());
+
 app.use(session({
     secret:"lty'WeShopping",
     name:'WeShopping',

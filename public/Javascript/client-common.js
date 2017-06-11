@@ -42,14 +42,7 @@ function alert(info,msec,closeCover){
 
 function unloggedHeadClick(){
     $("#div-login").fadeIn(500);
-    let height = parseFloat($("body").css("height").slice(0,-2)) + 46;
-    if(height > 768){
-        $("#div-cover-layer").css("height",height+"px");
-    }else{
-        $("#div-cover-layer").css("height",768+"px");
-    }
-    $("#div-cover-layer").fadeIn(500);
-    $("#main").addClass("disabled");
+    showCoverLayer();
 }
 
 function loggedHeadClick(){
@@ -257,20 +250,6 @@ function showGoods(){
     });
     $("#div-seller-good").fadeIn(500);
 }
-//
-// function addTableRow(tableId,columns=7,conArr){
-//     let table = $("#"+tableId);
-//     let html = '<tr>';
-//     for(let i = 0;i < columns;i++){
-//         html += '<td>';
-//         if(conArr.length > i){
-//             html += conArr;
-//         }
-//         html += '</td>';
-//     }
-//     html += '</tr>';
-//
-// }
 
 function createId(){
     return new Promise((resolve,reject)=>{
@@ -290,8 +269,9 @@ function createId(){
 }
 
 function hideGoods(){
-    $('#seller-good-table').bootstrapTable('destroy');
+    console.log("abc");
     $("#div-seller-good").fadeOut(500);
+    $('#seller-good-table').bootstrapTable('destroy');
 }
 
 function initUserCenter(info){
@@ -315,6 +295,121 @@ function initUserCenter(info){
     }
 }
 
+function initOrderConfirm(goodId,addr,message,num){
+    getGoodInfoById(goodId).then((back)=>{
+        if(back.result[0].rest < num){
+            alert("商品剩余量不足，请重新下单",2000,false);
+        }else{
+            console.log("aasdd");
+            $("#order-confirm-num-lab").html("购买数量:"+num);
+            $("#order-confirm-addr-lab").html("收货地址:"+addr);
+            $("#order-confirm-message-lab").html("买家留言:"+message);
+            $("#order-confirm-money-lab").html("商品总额:"+num*back.result[0].price*back.result[0].discount);
+            $("#order-confirm-confirm-btn").click(()=>{
+                // console.log("aaaaa");
+                // console.log({goodId:goodId,addr:addr,message:message,num:num});
+                addOrder({goodId:goodId,addr:addr,message:message,num:num}).then((back)=>{
+                    alert("购买成功",2000,true);
+                    $("#div-order").fadeOut(500);
+                    $("#div-order-confirm").fadeOut(500);
+                    uninitOrderConfirm();
+                    uninitorder();
+                }).catch((back)=>{
+                    // console.log(back);
+                    alert("服务器异常，请稍后再试",2000,false);
+                    $("#div-order-confirm").fadeOut(500);
+                    uninitOrderConfirm();
+                });
+            });
+            $("#order-confirm-cancel-btn").click(()=>{
+                $("#div-order-confirm").fadeOut(500);
+            });
+            $("#div-order-confirm").fadeIn(500);
+        }
+    }).catch((back)=>{
+        if(back.status == 13){
+            alert("商品剩余量不足，请重新下单",2000,false);
+        }else{
+            alert("服务器异常，请稍后再试",2000,false);
+        }
+    });
+}
+
+function uninitOrderConfirm(){
+    $("#order-confirm-num-lab").html("");
+    $("#order-confirm-addr-lab").html("");
+    $("#order-confirm-message-lab").html("");
+    $("#order-confirm-money-lab").html("");
+    $("#order-confirm-confirm-btn").unbind("click");
+    $("#order-confirm-cancel-btn").unbind("click");
+}
+
+function initOrder(goodId){
+    getUserInfo().then((back)=>{
+        if(back.result.type != 'o'){
+            alert("商家不能购买商品",2000,true);
+        }else{
+            $("#order-num-input").focus(()=>{
+                $("#order-num").removeClass("has-error");
+                $("#order-num-prompt-lab").html("");
+            })
+            $("#order-addr-input").focus(()=>{
+                $("#order-addr").removeClass("has-error");
+                $("#order-addr-prompt-lab").html("");
+            })
+            $("#order-create-btn").attr("goodid",goodId);
+            $("#order-create-btn").click(function(){
+                console.log("aaaaa");
+                let error = 0;
+                let message = $("#order-message-input").val();
+                let num = $("#order-num-input").val();
+                let addr = $.trim($("#order-addr-input").val());
+                if(addr == ""){
+                    error = 1;
+                    $("#order-addr").addClass("has-error");
+                    $("#order-addr-prompt-lab").html("收货地址不能为空");
+                }
+                if(typeof num !== "string" || num == "" || parseInt(num) <= 0){
+                    error = 1;
+                    console.log("bbb");
+                    $("#order-num").addClass("has-error");
+                    $("#order-num-prompt-lab").html("数量输入错误");
+                }
+                if(error === 0){
+                    initOrderConfirm(goodId,addr,message,parseInt(num));
+                }
+            });
+            $("#order-cancel-btn").click(function(){
+                $("#div-cover-layer").fadeOut(500);
+                $("#div-order").fadeOut(500);
+                uninitorder();
+            });
+            $("#order-cancel").click(function(){
+                $("#div-cover-layer").fadeOut(500);
+                $("#div-order").fadeOut(500);
+                uninitorder();
+            });
+            $("#div-cover-layer").fadeIn(500);
+            $("#div-order").fadeIn(500);
+        }
+    }).catch((back)=>{
+        if(back.status === 10){
+            alert("请先登录",2000,true);
+        }else{
+            alert("服务器异常，请稍后再试",2000,true);
+        }
+    });
+}
+
+function uninitorder(){
+    $("#order-message-input").val("");
+    $("#order-addr-input").val("");
+    $("#order-num-input").val("");
+    $("#order-create-btn").attr("goodid","");
+    $("#order-create-btn").unbind("click");
+    $("#order-cancel-btn").unbind("click");
+}
+
 function fillGoodList(result){
     for(let good of result){
         let html = `<div class="good">
@@ -328,12 +423,17 @@ function fillGoodList(result){
                     <label class="good-price-lab"><s>￥${good.price}</s>￥${good.price*good.discount}</label>
                 </div>
                 <div class="div-good-option">
-                    <label class="good-shop-cart-btn btn btn-primary">加入购物车</label>
-                    <label class="good-buy-btn btn btn-success" goodid="${good.id}">立即购买</label>
+                    <label class="good-shop-cart-btn btn btn-primary" goodId="${good.id}">加入购物车</label>
+                    <label class="good-buy-btn btn btn-success" goodId="${good.id}">立即购买</label>
                 </div>
             </div>`;
         $("#good-list").append(html);
     }
+    $(".good-buy-btn").click(function(){
+        let goodId = $(this).attr("goodid");
+        initOrder(goodId);
+        // console.log(goodId);
+    });
     $("#good-list").fadeIn(100);
 }
 
@@ -342,4 +442,223 @@ function clearGoodList(){
     $("#good-list").html("");
 }
 
+function initGood(){
+    loadGood(0).then((back)=>{
+        fillGoodList(back.result);
+    }).catch((back)=>{
+        alert("商品加载异常,请稍后刷新页面",3000,true);
+    });
+}
+
+function initOrderTable(ifSeller){
+    if(!ifSeller){
+        $("#order-table").bootstrapTable({
+            url: "../../user/order",
+            method: 'post',
+            showColumns: true,
+            showRefresh: true,
+            search: true,
+            strictSearch: false,
+            sortable: true,
+            uniqueId:'orderId',
+            columns: [{
+                field: 'orderId',
+                visible:false,
+                title: '订单id'
+            }, {
+                field: 'goodName',
+                editable:false,
+                title: '商品名称'
+            }, {
+                field: 'orderPrice',
+                editable:false,
+                title: '商品单价',
+            }, {
+                field: 'orderNum',
+                editable:false,
+                title: '商品数量',
+            },{
+                field: 'orderStatus',
+                editable:false,
+                title: '订单状态'
+            }, {
+                field: 'orderMessage',
+                editable:false,
+                title: '买家留言'
+            }, {
+                field: 'orderAddr',
+                editable:false,
+                title: '收货地址'
+            }, {
+                field: 'orderDate',
+                editable:false,
+                title: '订单时间'
+            }, {
+                field: 'orderMoney',
+                editable:false,
+                title: '订单总价'
+            }, {
+                field: 'option',
+                title: '操作',
+                formatter: function(value, row, index){
+                    return [
+                        '<a class="delete" title="取消订单"><span class="span-hover glyphicon glyphicon-remove"></span></a>',
+                        '&nbsp',
+                        '<a class="ok" title="确认收货"><span class="span-hover glyphicon glyphicon-ok"></span></a>'
+                    ].join('');
+                },
+                events:{
+                    'click .delete': function(e, value, row, index) {
+                        alterOrder(row.orderId,'c').then((back)=>{
+                            alert("取消订单成功",2000,false);
+                            $('#order-table').bootstrapTable('removeByUniqueId',row.orderId);
+                        }).catch((back)=>{
+                            console.log(back);
+                            if(back.status === 10){
+                                alert("此状态的订单不可取消",2000,false);
+                            }else{
+                                alert("取消订单出错，请稍后再试",2000,false);
+                            }
+
+                        });
+                        console.log(row);
+                    },'click .ok': function(e, value, row, index) {
+                        alterOrder(row.orderId,'e').then((back)=>{
+                            alert("确认收货成功",2000,false);
+                            $('#order-table').bootstrapTable('refresh');
+                        }).catch((back)=>{
+                            console.log(back);
+                            alert("取消订单出错，请稍后再试",2000,false);
+                        });
+                        console.log(row);
+                    }
+                }
+            }]
+        });
+    }else {
+        $("#order-table").bootstrapTable({
+            url: "../../user/order",
+            method: 'post',
+            showColumns: true,
+            showRefresh: true,
+            search: true,
+            strictSearch: false,
+            sortable: true,
+            uniqueId: 'orderId',
+            columns: [{
+                field: 'orderId',
+                visible: false,
+                title: '订单id'
+            }, {
+                field: 'goodName',
+                editable: false,
+                title: '商品名称'
+            }, {
+                field: 'orderPrice',
+                editable: false,
+                title: '商品单价',
+            }, {
+                field: 'orderNum',
+                editable: false,
+                title: '商品数量',
+            }, {
+                field: 'orderStatus',
+                editable: false,
+                title: '订单状态'
+            }, {
+                field: 'orderMessage',
+                editable: false,
+                title: '买家留言'
+            }, {
+                field: 'orderAddr',
+                editable: false,
+                title: '收货地址'
+            }, {
+                field: 'orderDate',
+                editable: false,
+                title: '订单时间'
+            }, {
+                field: 'orderMoney',
+                editable: false,
+                title: '订单总价'
+            }, {
+                field: 'option',
+                title: '操作',
+                formatter: function (value, row, index) {
+                    return [
+                        '<a class="delete" title="取消订单"><span class="span-hover glyphicon glyphicon-remove"></span></a>',
+                        '&nbsp',
+                        '<a class="recive" title="接受订单"><span class="span-hover glyphicon glyphicon-ok"></span></a>',
+                        '&nbsp',
+                        '<a class="outgood" title="确认发货"><span class="span-hover glyphicon glyphicon-plane"></span></a>'
+                    ].join('');
+                },
+                events: {
+                    'click .delete': function (e, value, row, index) {
+                        if(row.orderStatus === 'c' || row.orderStatus === 'e'){
+                            deleteOrder(row.orderId).then((back)=>{
+                                alert("删除订单成功",2000,false);
+                                $('#order-table').bootstrapTable('removeByUniqueId',row.orderId);
+                            }).catch((back)=>{
+                                console.log(back);
+                                if(back.status === 10){
+                                    alert("此状态订单不能删除",2000,false);
+                                }else{
+                                    alert("删除失败，请稍后再试",2000,false);
+                                }
+                            });
+                        }else{
+                            alert("此状态订单不能删除",2000,false);
+                        }
+                        console.log(row);
+                    },
+                    'click .recive': function (e, value, row, index) {
+                        if(row.orderStatus === 'u'){
+                            alterOrder(row.orderId,'o').then((back)=>{
+                                alert("接受订单成功",2000,false);
+                                $('#order-table').bootstrapTable('refresh');
+                            }).catch((back)=>{
+                                console.log(back);
+                                alert("接受订单出错，请稍后再试",2000,false);
+                            });
+                        }else{
+                            alert("订单状态不正确",2000,false);
+                        }
+                    },
+                    'click .outgood': function (e, value, row, index) {
+                        console.log(row);
+                        if(row.orderStatus === 'o' ){
+                            alterOrder(row.orderId,'g').then((back)=>{
+                                alert("发货成功",2000,false);
+                                $('#order-table').bootstrapTable('refresh');
+                            }).catch((back)=>{
+                                console.log(back);
+                                alert("发货出错，请稍后再试",2000,false);
+                            });
+                        }else{
+                            alert("订单状态不正确",2000,false);
+                        }
+                    }
+                }
+            }]
+        });
+    }
+    $("#order-table-cancel").click(()=>{
+        uninitOrderTable();
+        hideOrder();
+        $("#div-order-table").fadeOut(500);
+        $("#div-cover-layer").fadeOut(500);
+    });
+    $("#div-order-table").fadeIn(500);
+}
+
+function uninitOrderTable(){
+    $("#order-table").bootstrapTable("destroy");
+}
+
+function hideOrder(){
+    uninitOrderTable();
+    $('#order-table').bootstrapTable('destroy');
+    $("#div-order-table").fadeOut(500);
+}
 

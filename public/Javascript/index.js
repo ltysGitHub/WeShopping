@@ -20,7 +20,13 @@ $(document).ready(function(){
         $("#div-cover-layer").fadeOut(500);
         $('#picture-upload').fileinput('destroy');
         $('#div-picture-upload').fadeOut(500);
+        $("#div-order").fadeOut(500);
+        $("#div-order-confirm").fadeOut(500);
+        $("#div-order-table").fadeOut(500);
+        uninitOrderTable();
+        uninitorder();
         hideGoods();
+        uninitOrderConfirm();
     });
 
     $("#login-signup-btn").click(function(){
@@ -279,22 +285,16 @@ $(document).ready(function(){
         $('#div-user-option').css("left",1266+'px');
     }
 
-    $("#div-user-option").hover(()=>{},()=>{
-        $("#div-user-option").fadeOut(500);
-    });
 
-    loadGood(0).then((back)=>{
-        fillGoodList(back.result);
-    }).catch((back)=>{
-        alert("商品加载异常,请稍后刷新页面",3000,true);
-    });
+
+    initGood();
 
     $("#search-btn").click(()=>{
         let keyword = $("#search-input").val();
         clearGoodList();
-        console.log(keyword);
+        // console.log(keyword);
         if(keyword == ""){
-            console.log("aawewe"+keyword);
+            // console.log("aawewe"+keyword);
             loadGood(0).then((back)=>{
                 fillGoodList(back.result);
             }).catch((back)=>{

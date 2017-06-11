@@ -298,7 +298,7 @@ class Mysql{
      */
     addOrder(info){
         return new Promise((resolve,reject)=>{
-            if(typeof info.good !== 'string' ||typeof info.price !== 'number' ||typeof info.buyer !== 'string' || typeof info.num !== 'number' || typeof info.addr !== 'string' || typeof info.message !== 'string' || typeof info.class !== 'string'){
+            if(typeof info.good !== 'string' || typeof info.buyer !== 'string' || typeof info.num !== 'number' || typeof info.addr !== 'string' || typeof info.message !== 'string'){
                 let back = {status:1};
                 reject(back);
             }else{
@@ -311,19 +311,18 @@ class Mysql{
                 info.good = con.escape(info.good);
                 info.buyer = con.escape(info.buyer);
                 info.addr = con.escape(info.addr);
-                info.class = con.escape(info.class);
                 info.message = con.escape(info.message);
                 let sql = `select * from goods
-                            where id = ${good}`;
+                            where id = ${info.good}`;
                 con.query(sql,(err,result)=>{
                     if(err){
                         con.end();
                         let back = {status:2};
                         reject(back);
                     }else{
-                        if(result.length === 0 || result[0].rest < num){
+                        if(result.length === 0 || result[0].rest < info.num){
                             con.end();
-                            let back = {status:3};
+                            let back = {status:13};
                             reject(back);
                         }else{
                             let goodInfo = result[0];
@@ -333,9 +332,10 @@ class Mysql{
                                     let back = {status:4};
                                     reject(back);
                                 }else{
-                                    let newRest = result[0].rest - num;
+                                    let newRest = result[0].rest - info.num;
                                     let sql = `update goods set rest = ${newRest}
-                                                where id = ${good};`
+                                                where id = ${info.good};`
+                                    info.price = result[0].price*result[0].discount;
                                     con.query(sql,(err,result)=>{
                                         if(err){
                                             con.rollback();
@@ -345,8 +345,8 @@ class Mysql{
                                         }else{
                                             let id = uuid.v1();
                                             let date = new Date().toLocaleString();
-                                            let sql = `insert into orders(id,orderDate,good,num,class,buyer,seller,addr,price,message,status)
-                                                        values('${id}','${date}',${info.good},${info.num},${info.class},${info.buyer},'${goodInfo.seller}',${info.addr},${info.price},${info.message},'u');`
+                                            let sql = `insert into orders(id,orderDate,good,num,buyer,seller,addr,price,message,status)
+                                                        values('${id}','${date}',${info.good},${info.num},${info.buyer},'${goodInfo.seller}',${info.addr},${info.price},${info.message},'u');`
                                             con.query(sql,(err,result)=>{
                                                 if(err){
                                                     con.rollback();
@@ -660,7 +660,6 @@ class Mysql{
                                 reject(back);
                             });
                         }
-
                     }else{
                         reject({status:2});
                     }
@@ -693,13 +692,273 @@ class Mysql{
                             where seller = ${userId}`;
                 con.query(sql,(err,result)=>{
                     if(err){
+                        con.end();
                         let back = {status:2,errM:err.message};
                         reject(back);
                     }else{
+                        con.end();
                         let back = {status:0,result:result};
                         resolve(back);
                     }
                 })
+            }
+        });
+    }
+
+
+    /**
+     *
+     * @param goodId
+     * @param seller
+     * @returns {Promise}
+     */
+    checkGoodSeller(goodId,seller){
+        return new Promise((resolve,reject)=>{
+            this.getGoodInfoById(goodId).then((back)=>{
+                if(back.status !== 0){
+                    reject(back);
+                }else{
+                    if(back.result.length === 1 && back.result[0].seller === seller){
+                        resolve({status:0});
+                    }else{
+                        reject({status:10});
+                    }
+                }
+            }).catch((back)=>{
+                reject(back);
+            });
+        });
+    }
+
+    getGood(info){
+        return new Promise((resolve,reject)=>{
+            if(typeof info.page !== "number"){
+                reject({status:1});
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                let sql =  `select id,name,rest,saleVolume,price,seller,discount from goods `;
+                if(typeof info.keyword === "string"){
+                    let ery = `where name like "%${info.keyword}%" or tag like "%${info.keyword}%" `;
+                    sql += ery;
+                }
+                sql += `limit ${info.page*100},100;`
+                console.log(sql);
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        con.end();
+                        console.log(err);
+                        reject({status:2});
+                    }else{
+                        con.end();
+                        console.log(result);
+                        resolve({status:0,result:result});
+                    }
+                });
+            }
+        });
+    }
+
+    getOrderByUser(userId){
+        return new Promise((resolve,reject)=>{
+            if(typeof userId !== "string"){
+                reject({status:1});
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                userId = con.escape(userId);
+                let sql =  `select 
+                            orders.id orderId,
+                            orders.orderDate orderDate,
+                            goods.name goodName,
+                            orders.num orderNum,
+                            orders.addr orderAddr,
+                            orders.price orderPrice,
+                            orders.message orderMessage,
+                            orders.status orderStatus,
+                            orders.price*orders.num orderMoney 
+                            from orders,goods where (orders.buyer = ${userId} or orders.seller = ${userId}) and goods.id = orders.good;`;
+                console.log(sql);
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        console.log(err);
+                        con.end();
+                        reject({status:2});
+                    }else{
+                        console.log(result);
+                        con.end();
+                        resolve({status:0,result:result});
+                    }
+                });
+            }
+        });
+    }
+
+    deleteOrder(userId,orderId){
+        return new Promise((resolve,reject)=>{
+            if(typeof orderId !== "string" || typeof userId !== "string"){
+                reject({status:1});
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                orderId = con.escape(orderId);
+                let sql = `select * from orders where id = ${orderId};`;
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        con.end();
+                        reject({status:2});
+                    }else{
+                        if(result.length == 0){
+                            con.end();
+                            reject({status:3});
+                        }else{
+                            if(result[0].status === 'e' && (result[0].seller === userId || result[0].buyer === userId)){
+                                console.log("bbb"+result);
+                                if(result[0].seller == userId){
+                                    let sql = `delete from orders where id = ${orderId};`;
+                                    con.query(sql, (err, result) => {
+                                        if (err) {
+                                            con.end();
+                                            reject({status: 6});
+                                        } else {
+                                            con.end();
+                                            resolve({status: 0});
+                                        }
+                                    });
+                                }else{
+                                    console.log("aweee");
+                                    con.end();
+                                    reject({status:10});
+                                }
+                            }else{
+                                console.log(result);
+                                if(result[0].seller === userId && result[0].status !== 'g'){
+                                    let num = result[0].num;
+                                    let goodId = result[0].good;
+                                    con.beginTransaction((err)=>{
+                                        if(err){
+                                            con.end();
+                                            reject({status:4});
+                                        }else{
+                                            let sql = `update goods set rest = rest + ${num} where goods.id = '${goodId}';`;
+                                            con.query(sql,(err,result)=>{
+                                                if(err){
+                                                    con.rollback();
+                                                    con.end();
+                                                    reject({status:5});
+                                                }else{
+                                                    let sql = `delete from orders where id = ${orderId};`;
+                                                    con.query(sql,(err,result)=>{
+                                                        if(err){
+                                                            con.rollback();
+                                                            con.end();
+                                                            reject({status:6});
+                                                        }else{
+                                                            con.commit((err)=>{
+                                                                if(err){
+                                                                    con.rollback();
+                                                                    con.end();
+                                                                    reject({status:7});
+                                                                }else{
+                                                                    con.end();
+                                                                    resolve({status:0});
+                                                                }
+                                                            });
+
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }else{
+                                    con.end();
+                                    reject({status:10});
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    alterOrderstatus(userId,orderId,status){
+        return new Promise((resolve,reject)=>{
+            if(typeof orderId !== "string" || typeof status !== "string"){
+                reject({status:1});
+            }else{
+                let con = mysql.createConnection({
+                    host:this.host,
+                    user:this.user,
+                    password:this.passwd,
+                    database:this.database
+                });
+                orderId = con.escape(orderId);
+                let sql = `select * from orders where id = ${orderId};`;
+                con.query(sql,(err,result)=>{
+                    if(err){
+                        con.end();
+                        reject({status:3});
+                    }else{
+                        if(result.length == 0){
+                            con.end();
+                            reject({status:4});
+                        }else{
+                            if(result[0].seller === userId){
+                                if(status !== 'o' && status !== 'g'){
+                                    con.end();
+                                    reject({status:1});
+                                }else{
+                                    let sql = `update orders set status = '${status}' where id = ${orderId};`;
+                                    con.query(sql,(err,result)=>{
+                                        con.end();
+                                        if(err){
+                                            reject({status:5});
+                                        }else{
+                                            resolve({status:0});
+                                        }
+                                    });
+                                }
+                            }else if(result[0].buyer === userId){
+                                if(status !== 'e' &&  status !== 'c'){
+                                    con.end();
+                                    reject({status:1});
+                                }else{
+                                    if(result[0].status == 'g' && status == 'c'){
+                                        con.end();
+                                        reject({status:10});
+                                    }else{
+                                        let sql = `update orders set status = '${status}' where id = ${orderId};`;
+                                        con.query(sql,(err,result)=>{
+                                            con.end();
+                                            if(err){
+                                                reject({status:6});
+                                            }else{
+                                                resolve({status:0});
+                                            }
+                                        });
+                                    }
+                                }
+                            }else{
+                                con.end();
+                                reject({status:7});
+                            }
+                        }
+                    }
+                });
             }
         });
     }
@@ -766,6 +1025,18 @@ class Mysql{
 //     console.log(back);
 // });
 
+// new Mysql("root","liutengying").getOrderByUser("409514c0-499b-11e7-8b46-0fade443ec98").then((back)=>{
+//     console.log(back);
+// }).catch((back)=>{
+//     console.log(back);
+// });
 
+// new Mysql("root","liutengying").deleteOrder("409514c0-499b-11e7-8b46-0fade443ec98","2a544740-4e86-11e7-bcb2-db813ed95023").then((back)=>{
+//     console.log(back);
+// }).catch((back)=>{
+//     console.log(back);
+// });
+
+// new Mysql("root","liutengying").getGood(0);
 
 module.exports = Mysql;

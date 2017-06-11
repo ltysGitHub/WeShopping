@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/tether-1.3.3/dist/css/tether.min.css">
     <link rel="stylesheet" href="/static/CSS/noResponse.css">
     <link rel="stylesheet" href="/static/bootstrap3-editable/css/bootstrap-editable.css"/>
+    <link rel="stylesheet" href="/static/bootstrap-fileinput/css/fileinput.min.css"/>
     <link rel="stylesheet" href="/static/CSS/index.css">
 
 
@@ -17,8 +18,12 @@
     <script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/static/bootstrap_table/bootstrap-table.js" type="text/javascript"></script>
     <script src="/static/bootstrap_table/bootstrap-table-editable.js" type="text/javascript"></script>
+
     <script src="/static/bootstrap_table/toolbar/bootstrap-table-toolbar.js"></script>
     <script src="/static/bootstrap3-editable/js/bootstrap-editable.js" type="text/javascript"></script>
+    <script src="/static/bootstrap-fileinput/js/plugins/piexif.min.js" type="text/javascript"></script>
+    <script src="/static/bootstrap-fileinput/js/plugins/sortable.min.js" type="text/javascript"></script>
+    <script src="/static/bootstrap-fileinput/js/fileinput.min.js" type="text/javascript"></script>
     <script src="/static/Javascript/client-common.js" type="text/javascript"></script>
     <script src="/static/javascript/client-signup.js" type="text/javascript"></script>
     <script src="/static/javascript/client-login.js" type="text/javascript"></script>
@@ -43,7 +48,7 @@
             </div>
         </nav>
         <div class="good-list" id="good-list">
-            <div class="good">
+            <!-- <div class="good">
                 <div class="good-photo">
                     <img src="" alt="加载图片" id="img-src"/>
                 </div>
@@ -60,7 +65,7 @@
                     <label class="good-shop-cart-btn btn btn-primary">加入购物车</label>
                     <label class="good-buy-btn btn btn-success">立即购买</label>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -175,6 +180,68 @@
         </div>
     </div>
 
+    <div class="div-order" id="div-order">
+        <div class="order-title" id="order-title">
+            <h2>立即下单</h2>
+        </div>
+        <div class="order-cancel"  id="order-cancel">
+            <span class="glyphicon glyphicon-remove"></span>
+        </div>
+        <div class="order-num" id="order-num">
+            <lable for="order-num-input" class="order-num-lab control-label">数量</lable>
+            <input type="number" class="form-control order-num-input" id="order-num-input" placeholder="购买数量" min="1">
+            <lable for="login-user-input" class="order-num-prompt-lab control-label" id="order-num-prompt-lab"></lable>
+        </div>
+
+        <div class="order-addr" id="order-addr">
+            <lable for="order-addr-input" class="order-addr-lab control-label">地址</lable>
+            <input type="text" class="form-control order-addr-input" id="order-addr-input" placeholder="收货地址">
+            <lable for="order-addr-input" class="order-addr-prompt-lab control-label" id="order-addr-prompt-lab"></lable>
+        </div>
+        <div class="order-message" id="order-message">
+            <lable for="order-message-input" class="order-message-lab control-label">留言</lable>
+            <input type="text" class="form-control order-message-input" id="order-message-input" placeholder="买家留言">
+            <lable for="order-message-input" class="order-message-prompt-lab control-label" id="order-message-prompt-lab"></lable>
+        </div>
+        <div class="order-submit" id="order-submit">
+            <button class="order-create-btn btn btn-danger" id="order-create-btn">确认下单</button>
+            <button class="order-cancel-btn btn btn-success" id="order-cancel-btn">取消下单</button>
+        </div>
+    </div>
+
+
+    <div class="div-order-confirm" id="div-order-confirm">
+        <div class="order-confirm-title">
+            <h2>订单确认</h2>
+        </div>
+        <div class="order-confirm-num">
+            <label id="order-confirm-num-lab" class="order-confirm-num-lab">adaa</label>
+        </div>
+        <div class="order-confirm-addr">
+            <label id="order-confirm-addr-lab" class="order-confirm-addr-lab">asdssd</label>
+        </div>
+        <div class="order-confirm-message">
+            <label id="order-confirm-message-lab" class="order-confirm-message-lab">asasd</label>
+        </div>
+        <div class="order-confirm-money">
+            <label id = "order-confirm-money-lab" class="order-confirm-money-lab">asdsa</label>
+        </div>
+        <div class="order-confirm-submit" id="order-confirm-submit">
+            <button class="order-confirm-confirm-btn btn btn-danger" id="order-confirm-confirm-btn">确认下单</button>
+            <button class="order-confirm-cancel-btn btn btn-success" id="order-confirm-cancel-btn">返回修改</button>
+        </div>
+    </div>
+
+    <div id="div-order-table" class="div-order-table">
+        <div class="order-table-title" id="order-table-title">
+            <h2>订单管理</h2>
+        </div>
+        <div class="order-table-cancel" id="order-table-cancel">
+            <span class="glyphicon glyphicon-remove"></span>
+        </div>
+        <table id="order-table" class="order-table table table-bordered">
+        </table>
+    </div>
     <!--<div class="seller-good">-->
         <!--<div class="seller-good-cancel"  id="seller-good-cancel">-->
             <!--<span class="glyphicon glyphicon-remove"></span>-->
@@ -240,6 +307,9 @@
         </div>
     </div>
 
+    <div class="div-picture-upload" id="div-picture-upload">
+        <input id="picture-upload" type="file" name="goodPic" accept="image/png"/>
+    </div>
     <div class="user-option" id="div-user-option">
             <div class="user-option-item" id="user-option-center">
                 <p>个人中心</p>
